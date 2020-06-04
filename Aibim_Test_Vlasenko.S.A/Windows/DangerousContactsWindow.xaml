@@ -1,0 +1,23 @@
+﻿<Window x:Class="Aibim_Test_Vlasenko.S.A.Windows.DangerousContactsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DangerousContacts" Height="500" Width="530">
+    <Grid>
+        <ListView
+            x:Name="DangerousContactsList">
+            <ListView.Resources>
+                <Style TargetType="{x:Type GridViewColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header=" From" DisplayMemberBinding="{Binding From,StringFormat={}{0:dd.MM.yyyy HH:mm:ss}}" Width="140"/>
+                    <GridViewColumn Header=" To" DisplayMemberBinding="{Binding To, StringFormat={}{0:dd.MM.yyyy HH:mm:ss}}" Width="140"/>
+                    <GridViewColumn Header=" Member1_ID" DisplayMemberBinding="{Binding Member1_ID}" Width="100"/>
+                    <GridViewColumn Header=" Member2_ID" DisplayMemberBinding="{Binding Member2_ID}" Width="100"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>

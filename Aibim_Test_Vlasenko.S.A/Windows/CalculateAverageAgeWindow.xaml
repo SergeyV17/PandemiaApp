@@ -1,0 +1,81 @@
+﻿<Window x:Class="Aibim_Test_Vlasenko.S.A.Windows.CalculateAverageAgeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CalculateAverageAge" Height="250" Width="300"
+        MinHeight="250" MaxWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="100*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--Title-->
+        <TextBlock 
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Text="Calculate average age by name"
+                FontSize="14"
+                Width="200"/>
+        <StackPanel
+                 Grid.Row="1">
+            <!--Textblock: Enter the lastName-->
+            <TextBlock 
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
+                    Text="Enter the last name:"
+                    FontSize="14"
+                    Width="200"
+                    Margin="10,4,0,0"/>
+            <!--Textbox for enter-->
+            <TextBox
+                    Name="TxtBoxLastName"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    BorderBrush="LightGray"
+                    BorderThickness="1"
+                    FontSize="14"
+                    Width="200"
+                    Margin="10,5,0,5"/>
+            <!--Textblock: Enter the firstName-->
+            <TextBlock 
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
+                    Text="Enter the first name:"
+                    FontSize="14"
+                    Width="200"
+                    Margin="10,4,0,0"/>
+            <!--Textbox for enter-->
+            <TextBox
+                    Name="TxtBoxFirstName"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    BorderBrush="LightGray"
+                    BorderThickness="1"
+                    FontSize="14"
+                    Width="200"
+                    Margin="10,5,0,5"/>
+        </StackPanel>
+
+        <!--Show result button-->
+        <Button
+                Grid.Row="3"
+                x:Name="ShowResult"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Content="Show result"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                FontSize="14"
+                Width="120"
+                Height="25"
+                Margin="91,10,81,0"
+                Click="ShowResult_Click"
+                IsDefault="True">
+        </Button>
+    </Grid>
+</Window>
+
