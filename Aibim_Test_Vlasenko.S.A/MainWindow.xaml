@@ -12,7 +12,7 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="300*"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="120"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="400*"/>
@@ -142,14 +142,23 @@
                     Click="ShowAverageAgeByName_Click"
                     IsEnabled="{Binding Path=IsCreated}"/>
                 <Button
-                x:Name="ShowDangerousContacts"
-                Content="Show dangerous contacts"
-                FontSize="14"
-                Width="180"
-                HorizontalAlignment="Left"
-                Margin="10 10 0 0"
-                Click="ShowDangerousContacts_Click"
-                IsEnabled="{Binding Path=IsCreated}"/>
+                    x:Name="ShowDangerousContacts"
+                    Content="Show dangerous contacts"
+                    FontSize="14"
+                    Width="180"
+                    HorizontalAlignment="Left"
+                    Margin="10 10 0 0"
+                    Click="ShowDangerousContacts_Click"
+                    IsEnabled="{Binding Path=IsCreated}"/>
+                <Button
+                    x:Name="CreateInfectionTree"
+                    Content="Create infection tree"
+                    FontSize="14"
+                    Width="180"
+                    HorizontalAlignment="Left"
+                    Margin="10 10 0 0"
+                    Click="CreateInfectionTree_Click"
+                    IsEnabled="{Binding Path=IsCreated}"/>
             </StackPanel>
         </Border>
     </Grid>

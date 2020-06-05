@@ -3,21 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Diagnostics;
 
 namespace Data
 {
-    class TreeNode
+    public class TreeNode
     {
         public int MemberID {get; private set;}
-        public DateTime InfectionTime { get; private set; }
-        public TreeNode Parent { get; private set; }
+        public DateTime InfectionDateTime { get; private set; }
+        public TreeNode Parent { get; set; }
 
         public List<TreeNode> TreeNodes;
 
-        public TreeNode(int MemberId, DateTime InfectionTime)
+        public TreeNode()
+        {
+            TreeNodes = new List<TreeNode>();
+        }
+
+        public TreeNode(int MemberID, DateTime InfectionDateTime)
         {
             this.MemberID = MemberID;
-            this.InfectionTime = InfectionTime;
+            this.InfectionDateTime = InfectionDateTime;
 
             TreeNodes = new List<TreeNode>();
         }
@@ -28,71 +35,66 @@ namespace Data
             treeNode.Parent = this;
         }
 
-        //private void CreateTree(TreeNode node, List<Contact> contacts, int count = 0)
-        //{
-        //    while (count != contacts.Count)
-	       // {
-        //        if (count == 0)
-	       //     {
-		      //      this.MemberID = 213127;
-        //            this.InfectionTime = new DateTime(2020,01,01,0,0,0);
-	       //     }
-        //        else
-	       //     {
-        //            for (int i = 0; i < contacts.Count; i++)
-			     //   {
-			     //       if (true)
-	       //             {
-		                    
-	       //             }
-			     //   }
-	       //     }
-        //        var virus = new Virus();
-	         
-        //        var fromDateTime = Convert.ToDateTime(contacts[count].From);
-        //        var toDateTime = Convert.ToDateTime(contacts[count].To);
+        public void CreateTree(TreeNode node, List<Contact> contacts, int count = 0)
+        {
+            if (count == 0)
+            {
+                var treeNode = new TreeNode(contacts[0].Member1_ID, contacts[0].From);
+                this.TreeNodes.Add(treeNode);
 
-        //        if (toDateTime - fromDateTime > virus._infectedTime)
-        //        {
-        //            var treeNode = new TreeNode(contacts[count].Member1_ID, Convert.ToDateTime(contacts[count].From));
-        //            node.AddNode(treeNode);
+                CreateTree(treeNode, contacts, ++count);
+            }
+            else
+            {
+                if (count < contacts.Count)
+                {
+                    for (int i = 0; i < contacts.Count; i++)
+                    {
+                        if (contacts[i].Member1_ID == node.MemberID)
+                        {
+                            if (contacts[i].From >= node.InfectionDateTime + Virus._firstStageOfTheDisease)
+                            {
+                                if (contacts[i].To - contacts[i].From > Virus._infectedTime)
+                                {
+                                    var treeNode = new TreeNode(contacts[i].Member2_ID, contacts[i].From);
+                                    node.AddNode(treeNode);
 
-        //            treeNode = new TreeNode(contacts[count].Member2_ID, Convert.ToDateTime(contacts[count].To));
-        //            node.AddNode(treeNode);
-        //        }
+                                    CreateTree(treeNode, contacts, ++count);
 
-        //        CreateTree
-	       // }
-        //}
+                                    //treeNode = new TreeNode(contacts[i].Member2_ID, contacts[i].From);
+                                    //node.AddNode(treeNode);
 
-        //private void CreateTree( TreeNode tree, List<Contact> contacts)
-        //{
-        //    var virus = new Virus();
+                                    //CreateTree(treeNode, contacts, ++count);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-        //    for (int i = 0; i < contacts.Count; i++)
-        //    {
-        //        if (i == 0)
-        //        {
-        //            var fromDateTime = Convert.ToDateTime(contacts[i].From);
-        //            var toDateTime = Convert.ToDateTime(contacts[i].To);
+        public void PrintTree(string path, TreeNode tree, List<Person> persons, string trim = "")
+        {
+            File.WriteAllText(path, "");
 
-        //            if (toDateTime - fromDateTime > virus._infectedTime)
-        //            {
-        //                var treeNode = new TreeNode(contacts[i].Member1_ID, Convert.ToDateTime(contacts[i].From));
-        //                tree.AddNode(treeNode);
+            Print(path, tree, persons);
+        }
 
-        //                treeNode = new TreeNode(contacts[i].Member2_ID, Convert.ToDateTime(contacts[i].To));
-        //                tree.AddNode(treeNode);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (MemberID contacts[i].)
-        //            {
-                        
-        //            }
-        //        }
-        //    }
-        //}
+        private void Print(string path, TreeNode tree, List<Person> persons, string trim = "")
+        {
+            foreach (var node in tree.TreeNodes)
+            {
+                string name = persons.Find(e => e.ID == node.MemberID).Name;
+
+                string line = string.Format("{0} Name: {1} ID: {2}", trim, name, node.MemberID);
+
+                using (var sw = new StreamWriter(path, true))
+                {
+                    sw.WriteLine(line);
+                }
+
+                Print(path, node, persons, trim + "     ");
+            }
+        }
     }
 }

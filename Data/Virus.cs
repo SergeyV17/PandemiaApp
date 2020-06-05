@@ -6,21 +6,19 @@ using System.Threading.Tasks;
 
 namespace Data
 {
-    class Virus
+    static class Virus
     {
-        public bool IsInfected { get; set; }
+        public static readonly TimeSpan _infectedTime;
 
-        public readonly TimeSpan _infectedTime;
+        public static readonly TimeSpan _firstStageOfTheDisease;
 
-        public readonly TimeSpan _firstStageOfTheDisease;
+        public static readonly TimeSpan _secondStageOfTheDisease;
 
-        public readonly TimeSpan _secondStageOfTheDisease;
+        public static readonly TimeSpan _totalDiseaseTime;
 
-        public readonly TimeSpan _totalDiseaseTime;
+        public static readonly TimeSpan _immunityTime;
 
-        public readonly TimeSpan _immunityTime;
-
-        public Virus()
+        static Virus()
         {
             _infectedTime = TimeSpan.FromMinutes(5);
 

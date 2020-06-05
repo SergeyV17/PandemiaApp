@@ -11,17 +11,22 @@ namespace Aibim_Test_Vlasenko.S.A
     {
         public Repository Repository { get; private set; } // Repository for data
 
-        private readonly string big_data_persons; //path fields
-        private readonly string big_data_contacts;
+        public TreeNode Tree { get; set; }
+
+        private readonly string small_data_persons; //path fields
+        private readonly string small_data_contacts;
+        private readonly string infection_tree;
 
         public MainWindow()
         {
             InitializeComponent();
 
             Repository = new Repository();
+            Tree = new TreeNode();
 
-            big_data_persons = @"Data\JSON\small_data_persons.json";
-            big_data_contacts = @"Data\JSON\small_data_contacts.json";
+            small_data_persons = @"Data\JSON\small_data_persons.json";
+            small_data_contacts = @"Data\JSON\small_data_contacts.json";
+            infection_tree = @"InfectionTree\infection_tree.txt";
 
             DataContext = Repository;
         }
@@ -38,7 +43,7 @@ namespace Aibim_Test_Vlasenko.S.A
             if (!Repository.IsCreated)
             {
                 // Load data to repository
-                bool success = Repository.LoadDataToRepository(big_data_persons, big_data_contacts);
+                bool success = Repository.LoadDataToRepository(small_data_persons, small_data_contacts);
 
                 if (success)
                 {
@@ -114,6 +119,32 @@ namespace Aibim_Test_Vlasenko.S.A
             var showDangerousContactsWindow = new ShowDangerousContactsWindow() { Owner = this };
 
             showDangerousContactsWindow.ShowDialog();
+        }
+
+        /// <summary>
+        /// Create infection tree
+        /// </summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">args</param>
+        private void CreateInfectionTree_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Tree.CreateTree(Tree, Repository.Contacts);
+                Tree.PrintTree(infection_tree, Tree, Repository.Persons);
+
+                MessageBox.Show(
+                    this,
+                    "Data loaded to file infection",
+                    Title,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         #endregion

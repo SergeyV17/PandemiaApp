@@ -13,15 +13,13 @@ namespace ImportData
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             string date = (string)reader.Value;
+            
+            DateTime parseResult;
 
-            try
-            {
+            if (DateTime.TryParse(date, out parseResult))
                 return Convert.ToDateTime(date);
-            }
-            catch 
-            {
+            else
                 return reader.Value;
-            }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
