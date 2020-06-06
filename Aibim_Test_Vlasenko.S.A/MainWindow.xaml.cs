@@ -11,8 +11,6 @@ namespace Aibim_Test_Vlasenko.S.A
     {
         public Repository Repository { get; private set; } // Repository for data
 
-        public TreeNode Tree { get; set; }
-
         private readonly string small_data_persons; //path fields
         private readonly string small_data_contacts;
         private readonly string infection_tree;
@@ -22,7 +20,6 @@ namespace Aibim_Test_Vlasenko.S.A
             InitializeComponent();
 
             Repository = new Repository();
-            Tree = new TreeNode();
 
             small_data_persons = @"Data\JSON\small_data_persons.json";
             small_data_contacts = @"Data\JSON\small_data_contacts.json";
@@ -44,12 +41,14 @@ namespace Aibim_Test_Vlasenko.S.A
             {
                 // Load data to repository
                 bool success = Repository.LoadDataToRepository(small_data_persons, small_data_contacts);
+                //MaxNumberOfInfected.Text = TreeNode.MaxNumberOfInfected.ToString();
 
                 if (success)
                 {
-                    // Fill tables itemsources
+                    // Fill tables and treeview itemsources
                     PersonTable.ItemsSource = Repository.Persons;
                     ContactsTable.ItemsSource = Repository.Contacts;
+                    InfectionTree.ItemsSource = Repository.Tree.Children;
                 }
                 else
                 {
@@ -126,24 +125,29 @@ namespace Aibim_Test_Vlasenko.S.A
         /// </summary>
         /// <param name="sender">object</param>
         /// <param name="e">args</param>
-        private void CreateInfectionTree_Click(object sender, RoutedEventArgs e)
+        private void SaveInfectionTreeToTxt_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Tree.CreateTree(Tree, Repository.Contacts);
-                Tree.PrintTree(infection_tree, Tree, Repository.Persons);
+            bool success = Repository.Tree.SaveTreeToFile(infection_tree, Repository.Tree);
 
+            if (success)
+            {
                 MessageBox.Show(
                     this,
-                    "Data loaded to file infection",
+                    @"The infection tree is saved to a file InfectionTree\infection_tree.txt",
                     Title,
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
                 );
             }
-            catch (System.Exception ex)
+            else
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(
+                    this,
+                    "Something goes wrong",
+                    Title,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
             }
         }
 

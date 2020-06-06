@@ -8,7 +8,7 @@ namespace Data
 {
     static class Virus
     {
-        public static readonly TimeSpan _infectedTime;
+        public static readonly TimeSpan _safeTime;
 
         public static readonly TimeSpan _firstStageOfTheDisease;
 
@@ -20,11 +20,11 @@ namespace Data
 
         static Virus()
         {
-            _infectedTime = TimeSpan.FromMinutes(5);
+            _safeTime = TimeSpan.FromMinutes(5);
 
             _firstStageOfTheDisease = TimeSpan.FromDays(4);
 
-            _secondStageOfTheDisease = TimeSpan.FromDays(7);
+            _secondStageOfTheDisease = TimeSpan.FromDays(16);
 
             _totalDiseaseTime = _firstStageOfTheDisease + _secondStageOfTheDisease;
 

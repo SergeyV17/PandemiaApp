@@ -1,24 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
 
 namespace Data
 {
+    enum Monthes
+    {
+        February = 2,
+        Marсh,
+        April,
+        May
+    }
+    
     public class TreeNode
     {
+        public bool IsSaved { get; private set; }
         public int MemberID {get; private set;}
         public DateTime InfectionDateTime { get; private set; }
-        public TreeNode Parent { get; set; }
+        public TreeNode Parent { get; private set; }
 
-        public List<TreeNode> TreeNodes;
+        public int NumberOfInfected { get; private set; }
+
+        private static int _maxNumberOfInfected;
+
+        public static int MaxNumberOfInfected
+        {
+            get { return _maxNumberOfInfected; }
+            set 
+            {
+                _maxNumberOfInfected = value;
+                OnMaxNumberOfInfectedChanged(EventArgs.Empty);
+            }
+        }
+
+        public static int CurrentMonth { get; private set; }
+
+        public static event EventHandler MaxNumberOfInfectedChanged;
+
+        private static void OnMaxNumberOfInfectedChanged(EventArgs e)
+        {
+            MaxNumberOfInfectedChanged?.Invoke(null, e);
+        }
+
+        public List<TreeNode> Children { get; private set; }
+
+        static TreeNode()
+        {
+            MaxNumberOfInfectedChanged += (sender, e) => { return; };
+
+            _maxNumberOfInfected = 0;
+            CurrentMonth = 0;
+        }
 
         public TreeNode()
         {
-            TreeNodes = new List<TreeNode>();
+            Children = new List<TreeNode>();
         }
 
         public TreeNode(int MemberID, DateTime InfectionDateTime)
@@ -26,12 +63,13 @@ namespace Data
             this.MemberID = MemberID;
             this.InfectionDateTime = InfectionDateTime;
 
-            TreeNodes = new List<TreeNode>();
+            Children = new List<TreeNode>();
         }
+
 
         private void AddNode(TreeNode treeNode)
         {
-            TreeNodes.Add(treeNode);
+            Children.Add(treeNode);
             treeNode.Parent = this;
         }
 
@@ -40,7 +78,7 @@ namespace Data
             if (count == 0)
             {
                 var treeNode = new TreeNode(contacts[0].Member1_ID, contacts[0].From);
-                this.TreeNodes.Add(treeNode);
+                this.Children.Add(treeNode);
 
                 CreateTree(treeNode, contacts, ++count);
             }
@@ -50,50 +88,92 @@ namespace Data
                 {
                     for (int i = 0; i < contacts.Count; i++)
                     {
-                        if (contacts[i].Member1_ID == node.MemberID)
+                        // if infection datetime > current contact datetime then go forward
+                        if (node.InfectionDateTime > contacts[i].From)
                         {
-                            if (contacts[i].From >= node.InfectionDateTime + Virus._firstStageOfTheDisease)
+                            continue;
+                        }
+                        else
+                        {
+                            // if infected member == current contact member
+                            if (node.MemberID == contacts[i].Member1_ID)
                             {
-                                if (contacts[i].To - contacts[i].From > Virus._infectedTime)
+                                //if date of contact enters the stage when the disease is transmitted
+                                if (contacts[i].From > node.InfectionDateTime + Virus._firstStageOfTheDisease &&
+                                    contacts[i].From < node.InfectionDateTime + Virus._totalDiseaseTime)
                                 {
-                                    var treeNode = new TreeNode(contacts[i].Member2_ID, contacts[i].From);
-                                    node.AddNode(treeNode);
+                                    // if contact lasted longer than safe time
+                                    if (contacts[i].To - contacts[i].From > Virus._safeTime)
+                                    {
+                                        var treeNode = new TreeNode(contacts[i].Member2_ID, contacts[i].From);
+                                        node.AddNode(treeNode);
 
-                                    CreateTree(treeNode, contacts, ++count);
-
-                                    //treeNode = new TreeNode(contacts[i].Member2_ID, contacts[i].From);
-                                    //node.AddNode(treeNode);
-
-                                    //CreateTree(treeNode, contacts, ++count);
+                                        CreateTree(treeNode, contacts, ++count);
+                                    }
                                 }
                             }
                         }
+
                     }
                 }
             }
         }
 
-        public void PrintTree(string path, TreeNode tree, List<Person> persons, string trim = "")
+        public void CalculateInfectedPersonsOnPeak(TreeNode tree)
         {
-            File.WriteAllText(path, "");
+            foreach (var node in tree.Children)
+            {
+                if (node.Parent == null)
+                {
+                    CurrentMonth = node.InfectionDateTime.Month;
 
-            Print(path, tree, persons);
+                    NumberOfInfected++;
+                }
+                else
+                {
+                    if (CurrentMonth != node.InfectionDateTime.Month)
+                    {
+                        MaxNumberOfInfected = NumberOfInfected;
+
+                        NumberOfInfected = 0;
+                    }
+
+                    NumberOfInfected++;
+                }
+            }
         }
 
-        private void Print(string path, TreeNode tree, List<Person> persons, string trim = "")
+        public bool SaveTreeToFile(string path, TreeNode tree, string trim = "")
         {
-            foreach (var node in tree.TreeNodes)
+            try
             {
-                string name = persons.Find(e => e.ID == node.MemberID).Name;
+                File.Delete(path);
+                File.WriteAllText(path, "");
 
-                string line = string.Format("{0} Name: {1} ID: {2}", trim, name, node.MemberID);
+                Print(path, tree);
 
+                return IsSaved = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+
+                return IsSaved = false;
+            }
+        }
+
+        private void Print(string path, TreeNode tree, string trim = "")
+        {
+            foreach (var node in tree.Children)
+            {
+                string line = string.Format("{0} ID: {1} Infection time: {2:dd.MM.yyyy HH:mm:ss}", trim, node.MemberID, node.InfectionDateTime);
+                
                 using (var sw = new StreamWriter(path, true))
                 {
                     sw.WriteLine(line);
                 }
 
-                Print(path, node, persons, trim + "     ");
+                Print(path, node, trim + "     ");
             }
         }
     }

@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Data;assembly=Data"
         mc:Ignorable="d"
-        Title="Pandemia" Height="660" Width="870"
+        Title="Pandemia" Height="660" Width="1500"
         MinHeight="660" MinWidth="870">
     <Grid>
         <Grid.RowDefinitions>
@@ -16,6 +17,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="400*"/>
+            <ColumnDefinition Width="520*"/>
             <ColumnDefinition Width="600*"/>
         </Grid.ColumnDefinitions>
 
@@ -23,7 +25,7 @@
         <Menu
             Grid.Row="0"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="3"
             VerticalAlignment="Top" 
             Height="20">
             <MenuItem
@@ -56,12 +58,26 @@
         </Border>
         <Border
             Grid.Row="1"
-            Grid.Column="2"
+            Grid.Column="1"
             BorderBrush="Gray" 
             BorderThickness="1" 
             >
             <TextBlock
                 Text="Contacts"
+                FontSize="16"
+                FontWeight="Medium"
+                VerticalAlignment="Center"
+                Margin="10,0">
+            </TextBlock>
+        </Border>
+        <Border
+            Grid.Row="1"
+            Grid.Column="2"
+            BorderBrush="Gray" 
+            BorderThickness="1" 
+            >
+            <TextBlock
+                Text="Infection tree"
                 FontSize="16"
                 FontWeight="Medium"
                 VerticalAlignment="Center"
@@ -91,7 +107,7 @@
         <!--Contacts table-->
         <ListView
             Grid.Row="2"
-            Grid.Column="2"
+            Grid.Column="1"
             x:Name="ContactsTable">
             <ListView.Resources>
                 <Style TargetType="{x:Type GridViewColumnHeader}">
@@ -108,16 +124,63 @@
             </ListView.View>
         </ListView>
 
+        <!--Infection tree-->
+        <TreeView 
+            x:Name="InfectionTree"
+            Grid.Row="2"
+            Grid.Column="2"
+            BorderBrush="LightGray" 
+            BorderThickness="1"
+            >
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="True"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate 
+                    ItemsSource="{Binding Path=Children}"
+                    >
+                    <TextBlock 
+                        FontSize="14"
+                        >
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{} ID: {0} Infection Time: {1:dd.MM.yyyy HH:mm:ss}">
+                                <Binding Path="MemberID" />
+                                <Binding Path="InfectionDateTime" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+
         <!--Commands title-->
         <Border
             Grid.Row="3"
             Grid.Column="0"
-            Grid.ColumnSpan="3"
+            Grid.ColumnSpan="2"
             BorderBrush="Gray" 
             BorderThickness="1"
             >
             <TextBlock
                 Text="Commands"
+                FontSize="16"
+                FontWeight="Medium"
+                VerticalAlignment="Center"
+                Margin="10,0">
+            </TextBlock>
+        </Border>
+
+        <!--Information title-->
+        <Border
+            Grid.Row="3"
+            Grid.Column="2"
+            BorderBrush="Gray" 
+            BorderThickness="1"
+            >
+            <TextBlock
+                Text="Information"
                 FontSize="16"
                 FontWeight="Medium"
                 VerticalAlignment="Center"
@@ -151,15 +214,40 @@
                     Click="ShowDangerousContacts_Click"
                     IsEnabled="{Binding Path=IsCreated}"/>
                 <Button
-                    x:Name="CreateInfectionTree"
-                    Content="Create infection tree"
+                    x:Name="SaveInfectionTreeToTxt"
+                    Content="Save infection tree to txt"
                     FontSize="14"
                     Width="180"
                     HorizontalAlignment="Left"
                     Margin="10 10 0 0"
-                    Click="CreateInfectionTree_Click"
+                    Click="SaveInfectionTreeToTxt_Click"
                     IsEnabled="{Binding Path=IsCreated}"/>
             </StackPanel>
         </Border>
+        
+            <!--Information-->
+            <Border
+                Grid.Row="4"
+                Grid.Column="2"
+                BorderBrush="Gray" 
+                BorderThickness="1">
+                <StackPanel>
+                    <TextBlock
+                        x:Name="MaxNumberOfInfected"
+                        FontSize="14"
+                        Margin="10 10 0 0"
+                    >
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsCreated}" Value="True">
+                                    <Setter Property="Text" Value="{Binding StringFormat={}The number of people infected at the peak: {0}, Path=(local:TreeNode.MaxNumberOfInfected)}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
     </Grid>
 </Window>

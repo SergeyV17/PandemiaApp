@@ -29,10 +29,13 @@ namespace Data
         public List<Person> Persons { get; private set; }
         public List<Contact> Contacts { get; private set; }
 
+        public TreeNode Tree { get; private set; }
+
         public Repository()
         {
             Persons = new List<Person>();
             Contacts = new List<Contact>();
+            Tree = new TreeNode();
         }
 
         /// <summary>
@@ -48,6 +51,8 @@ namespace Data
                 //load data
                 Persons = Deserialize.LoadJson<Person>(personPath).OrderBy(e => e.ID).ToList(); // sort by ID for convenience
                 Contacts = Deserialize.LoadJson<Contact>(contactsPath).OrderBy(e => e.From).ToList(); // sort by date for convenience
+
+                Tree.CreateTree(Tree, Contacts);
 
                 return IsCreated = true;
             }

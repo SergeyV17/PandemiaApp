@@ -12,6 +12,13 @@ namespace Aibim_Test_Vlasenko.S.A.Windows
         public DangerousContactsWindow()
         {
             InitializeComponent();
+
+            this.Closing += DangerousContactsWindow_Closing1;
+        }
+
+        private void DangerousContactsWindow_Closing1(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            this.Owner = null;
         }
 
         public DangerousContactsWindow(List<Contact> dangerousContacts)
