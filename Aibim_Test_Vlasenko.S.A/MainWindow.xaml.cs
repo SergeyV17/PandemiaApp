@@ -41,7 +41,6 @@ namespace Aibim_Test_Vlasenko.S.A
             {
                 // Load data to repository
                 bool success = Repository.LoadDataToRepository(small_data_persons, small_data_contacts);
-                //MaxNumberOfInfected.Text = TreeNode.MaxNumberOfInfected.ToString();
 
                 if (success)
                 {

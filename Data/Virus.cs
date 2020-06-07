@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data
 {
@@ -24,7 +20,7 @@ namespace Data
 
             _firstStageOfTheDisease = TimeSpan.FromDays(4);
 
-            _secondStageOfTheDisease = TimeSpan.FromDays(16);
+            _secondStageOfTheDisease = TimeSpan.FromDays(12);
 
             _totalDiseaseTime = _firstStageOfTheDisease + _secondStageOfTheDisease;
 

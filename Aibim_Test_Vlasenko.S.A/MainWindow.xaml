@@ -89,7 +89,8 @@
         <ListView
             Grid.Row="2"
             Grid.Column="0"
-            x:Name="PersonTable">
+            x:Name="PersonTable"
+            DataContext="{Binding Path=Persons}">
             <ListView.Resources>
                 <Style TargetType="{x:Type GridViewColumnHeader}">
                     <Setter Property="HorizontalContentAlignment" Value="Left"/>
