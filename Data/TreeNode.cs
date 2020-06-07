@@ -2,39 +2,32 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Data
 {
-    enum Monthes
-    {
-        February = 2,
-        Marсh,
-        April,
-        May
-    }
-    
-    public class TreeNode
+    public partial class TreeNode
     {
         public bool IsSaved { get; private set; }
-        public int MemberID {get; private set;}
+        public int MemberID { get; private set; }
         public DateTime InfectionDateTime { get; private set; }
         public TreeNode Parent { get; private set; }
 
-        public int NumberOfInfected { get; private set; }
+        private static int[] NumbersOfInfected;
 
         private static int _maxNumberOfInfected;
 
         public static int MaxNumberOfInfected
         {
             get { return _maxNumberOfInfected; }
-            set 
+            set
             {
                 _maxNumberOfInfected = value;
                 OnMaxNumberOfInfectedChanged(EventArgs.Empty);
             }
         }
 
-        public static int CurrentMonth { get; private set; }
+        public static string PandemiaPeakMonth {get; set;}
 
         public static event EventHandler MaxNumberOfInfectedChanged;
 
@@ -49,8 +42,8 @@ namespace Data
         {
             MaxNumberOfInfectedChanged += (sender, e) => { return; };
 
+            NumbersOfInfected = new int[12];
             _maxNumberOfInfected = 0;
-            CurrentMonth = 0;
         }
 
         public TreeNode()
@@ -119,31 +112,70 @@ namespace Data
             }
         }
 
+        //BFS
         public void CalculateInfectedPersonsOnPeak(TreeNode tree)
         {
-            foreach (var node in tree.Children)
+            if (tree == null)
+                return;
+
+            var queue = new Queue<TreeNode>();
+            queue.Enqueue(tree);
+
+            while (queue.Count > 0)
             {
-                if (node.Parent == null)
-                {
-                    CurrentMonth = node.InfectionDateTime.Month;
+                var node = queue.Dequeue();
 
-                    NumberOfInfected++;
+                switch ((Monthes)node.InfectionDateTime.Month)
+                {
+                    case Monthes.January:
+                        NumbersOfInfected[(int)Monthes.January]++;
+                        break;
+                    case Monthes.February:
+                        NumbersOfInfected[(int)Monthes.February]++;
+                        break;
+                    case Monthes.March:
+                        NumbersOfInfected[(int)Monthes.March]++;
+                        break;
+                    case Monthes.April:
+                        NumbersOfInfected[(int)Monthes.April]++;
+                        break;
+                    case Monthes.May:
+                        NumbersOfInfected[(int)Monthes.May]++;
+                        break;
+                    case Monthes.June:
+                        NumbersOfInfected[(int)Monthes.June]++;
+                        break;
+                    case Monthes.July:
+                        NumbersOfInfected[(int)Monthes.July]++;
+                        break;
+                    case Monthes.August:
+                        NumbersOfInfected[(int)Monthes.August]++;
+                        break;
+                    case Monthes.September:
+                        NumbersOfInfected[(int)Monthes.September]++;
+                        break;
+                    case Monthes.November:
+                        NumbersOfInfected[(int)Monthes.November]++;
+                        break;
+                    case Monthes.December:
+                        NumbersOfInfected[(int)Monthes.December]++;
+                        break;
+                    default:
+                        Debug.WriteLine("Incorrect number");
+                        break;
                 }
-                else
+
+                foreach (var child in node.Children)
                 {
-                    if (CurrentMonth != node.InfectionDateTime.Month)
-                    {
-                        MaxNumberOfInfected = NumberOfInfected;
-
-                        NumberOfInfected = 0;
-                    }
-
-                    NumberOfInfected++;
+                    queue.Enqueue(child);
                 }
             }
+
+            MaxNumberOfInfected = NumbersOfInfected.Max();
+            PandemiaPeakMonth = ((Monthes)Array.IndexOf(NumbersOfInfected, MaxNumberOfInfected)).ToString();
         }
 
-        public bool SaveTreeToFile(string path, TreeNode tree, string trim = "")
+        public bool SaveTreeToFile(string path, TreeNode tree)
         {
             try
             {

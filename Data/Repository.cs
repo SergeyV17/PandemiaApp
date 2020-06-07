@@ -53,6 +53,7 @@ namespace Data
                 Contacts = Deserialize.LoadJson<Contact>(contactsPath).OrderBy(e => e.From).ToList(); // sort by date for convenience
 
                 Tree.CreateTree(Tree, Contacts);
+                Tree.CalculateInfectedPersonsOnPeak(Tree);
 
                 return IsCreated = true;
             }
