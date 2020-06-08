@@ -167,20 +167,18 @@
             Grid.Column="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Visibility="Hidden"
-            >
+            Visibility="Hidden">
             <TextBlock 
                 x:Name="ProgressBarTxtBl"
                 Text="Loading..."
-                HorizontalAlignment="Center"
-                />
+                HorizontalAlignment="Center"/>
             <ProgressBar
                 x:Name="progressBar"
                 Minimum="0"
                 Maximum="4"
                 Width="300"
                 Margin="5"
-                />
+                IsIndeterminate="True"/>
         </StackPanel>
             
         <!--Titles: Commands, Virus settings, Information-->
