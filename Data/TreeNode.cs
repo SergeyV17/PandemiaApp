@@ -1,80 +1,140 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace Data
 {
+    /// <summary>
+    /// Класс узла дерева
+    /// </summary>
     public partial class TreeNode
     {
-        private static readonly object _locker;
+        // Эвент срабатывающий при изменении значения статических свойств
+        public static event PropertyChangedEventHandler StaticPropertyChanged;
+        public static void NotifyStaticPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            if (StaticPropertyChanged != null)
+            {
+                StaticPropertyChanged(null, new PropertyChangedEventArgs(propertyName));
+            }
+        }
 
-        public bool IsSaved { get; private set; }
         public int MemberID { get; private set; }
         public DateTime InfectionDateTime { get; private set; }
         public DateTime ImmunityDateTime { get; private set; }
         public TreeNode Parent { get; private set; }
 
-        private static int[] NumbersOfInfected;
-        public static int MaxNumberOfInfected { get; private set; }
-        public static string PandemiaPeakMonth {get; set;}
+        private int[] NumbersOfInfected;
+
+        private static int _maxNumberOfInfected;
+
+        public static int MaxNumberOfInfected
+        {
+            get { return _maxNumberOfInfected; }
+            set
+            {
+                _maxNumberOfInfected = value;
+                NotifyStaticPropertyChanged("MaxNumberOfInfected");
+            }
+        }
+
+        private static string _pandemiaPeakMonth;
+
+        public static string PandemiaPeakMonth
+        {
+            get { return _pandemiaPeakMonth; }
+            set
+            {
+                _pandemiaPeakMonth = value;
+                 NotifyStaticPropertyChanged("PandemiaPeakMonth");
+            }
+        }
+
+        private static int _manHoursLosted;
+
+        public static int ManHoursLost
+        {
+            get { return _manHoursLosted; }
+            set
+            {
+                _manHoursLosted = value;
+                NotifyStaticPropertyChanged("ManHoursLost");
+            }
+        }
 
         public List<TreeNode> Children { get; private set; }
-
-        static TreeNode()
-        {
-            NumbersOfInfected = new int[12];
-            MaxNumberOfInfected = 0;
-
-            _locker = new object();
-        }
 
         public TreeNode()
         {
             Children = new List<TreeNode>();
+            NumbersOfInfected = new int[12];
         }
 
-        public TreeNode(int MemberID, DateTime InfectionDateTime)
+        /// <summary>
+        /// Конструктор узла
+        /// </summary>
+        /// <param name="MemberID">ID члена</param>
+        /// <param name="InfectionDateTime">Дата заражения</param>
+        public TreeNode(int MemberID, DateTime InfectionDateTime) : 
+            this()
         {
             this.MemberID = MemberID;
             this.InfectionDateTime = InfectionDateTime;
-
-            Children = new List<TreeNode>();
         }
 
-        public TreeNode(int MemberID, DateTime InfectionDateTime, DateTime ImmunityDateTime)
+        /// <summary>
+        /// Конструктор узла
+        /// </summary>
+        /// <param name="MemberID">ID члена</param>
+        /// <param name="InfectionDateTime">дата заражения</param>
+        /// <param name="ImmunityDateTime">дата начала действия иммунитета</param>
+        public TreeNode(int MemberID, DateTime InfectionDateTime, DateTime ImmunityDateTime) :
+            this(MemberID,InfectionDateTime)
         {
-            this.MemberID = MemberID;
-            this.InfectionDateTime = InfectionDateTime;
             this.ImmunityDateTime = ImmunityDateTime;
-
-            Children = new List<TreeNode>();
         }
 
-
+        /// <summary>
+        /// Метод добавления нового узла
+        /// </summary>
+        /// <param name="treeNode">новый узел дерева</param>
         private void AddNode(TreeNode treeNode)
         {
             Children.Add(treeNode);
             treeNode.Parent = this;
         }
 
+        /// <summary>
+        /// Метод создания дерева
+        /// </summary>
+        /// <param name="node">первоначальный узел</param>
+        /// <param name="contacts">список контактов</param>
+        /// <param name="initialDateTime">исходная дата (необходима для создания первого заражённого)</param>
         public void CreateTree(TreeNode node, List<Contact> contacts, DateTime initialDateTime)
         {   
-            //Перегруз
+            // Метод перегружен для инициализации необязательного параметра DateTime start
             CreateTree(node, contacts, initialDateTime, new DateTime(2020, 02, 01));
         }
 
+        /// <summary>
+        /// Метод создания дерева
+        /// </summary>
+        /// <param name="node">узел дерева</param>
+        /// <param name="contacts">список контактов</param>
+        /// <param name="initialDateTime">исходная дата(необходима для создания первого заражённого)</param>
+        /// <param name="start">исходная дата</param>
         public void CreateTree(TreeNode node, List<Contact> contacts, DateTime initialDateTime, DateTime start)
         {
             if (start == initialDateTime)
             {
                 // Контактирующий заражается спустя завершения безопасного времени после контакта с заражённым
-                var infectionDateTime = contacts[0].From.Add(Virus._safeTime);
+                var infectionDateTime = contacts[0].From.Add(Virus.SafeTime);
 
                 //Иммунитет второго контактирующего начинает действовать после завершения болезни
-                var immunityDateTime = infectionDateTime + Virus._totalDiseaseTime;
+                var immunityDateTime = infectionDateTime + Virus.TotalDiseaseTime;
 
                 var treeNode = new TreeNode(contacts[0].Member1_ID, infectionDateTime, immunityDateTime);
                 this.Children.Add(treeNode);
@@ -100,26 +160,26 @@ namespace Data
                             if (node.MemberID == contacts[i].Member1_ID || node.MemberID == contacts[i].Member2_ID)
                             {
                                 //Если дата контакта в пределах даты заражения (т.е. член имеет способность к заражению в указанном интервале)
-                                if (contacts[i].From > node.InfectionDateTime + Virus._firstStageOfTheDisease &&
-                                    contacts[i].From < node.InfectionDateTime + Virus._totalDiseaseTime)
+                                if (contacts[i].From > node.InfectionDateTime + Virus.FirstStageOfTheDisease &&
+                                    contacts[i].From < node.InfectionDateTime + Virus.TotalDiseaseTime)
                                 {
                                     int infectedMemberID = node.MemberID == contacts[i].Member1_ID ? contacts[i].Member2_ID : contacts[i].Member1_ID;
 
                                     // Если контакт длился больше безопасного времени
-                                    if (contacts[i].To - contacts[i].From > Virus._safeTime)
+                                    if (contacts[i].To - contacts[i].From > Virus.SafeTime)
                                     {
                                         // Проверка был ли данный член уже заражён в максимально близкое к текущему заражению времени
-                                        var infectedMember = SearchInfectedPerson(this, e => e.MemberID == infectedMemberID &&
+                                        var infectedMember = TreeSearch.SearchInfectedMember(this, e => e.MemberID == infectedMemberID &&
                                         e.InfectionDateTime <= node.InfectionDateTime);
 
                                         // Если данный член не был до этого заражён, опускаем проверку на иммунитет
                                         if (infectedMember == null)
                                         {
                                             //Второй контактирующий заражается спустя завершения безопасного времени после контакта с заражённым
-                                            DateTime infectionDateTime = contacts[i].From.Add(Virus._safeTime);
+                                            DateTime infectionDateTime = contacts[i].From.Add(Virus.SafeTime);
 
                                             //Иммунитет второго контактирующего начинает действовать после завершения болезни
-                                            DateTime immunityDateTime = infectionDateTime + Virus._totalDiseaseTime;
+                                            DateTime immunityDateTime = infectionDateTime + Virus.TotalDiseaseTime;
 
                                             var treeNode = new TreeNode(infectedMemberID, infectionDateTime, immunityDateTime);
                                             node.AddNode(treeNode);
@@ -129,13 +189,13 @@ namespace Data
                                         else
                                         {
                                             //Проверка имеет ли данный член иммунитет
-                                            if (contacts[i].From > infectedMember.ImmunityDateTime + Virus._immunityTime)
+                                            if (contacts[i].From > infectedMember.ImmunityDateTime + Virus.ImmunityTime)
                                             {
                                                 //Второй контактирующий заражается спустя завершения безопасного времени после контакта с заражённым
-                                                DateTime infectionDateTime = contacts[i].From.Add(Virus._safeTime);
+                                                DateTime infectionDateTime = contacts[i].From.Add(Virus.SafeTime);
 
                                                 //Иммунитет второго контактирующего начинает действовать после завершения болезни
-                                                DateTime immunityDateTime = infectionDateTime + Virus._totalDiseaseTime;
+                                                DateTime immunityDateTime = infectionDateTime + Virus.TotalDiseaseTime;
 
                                                 var treeNode = new TreeNode(infectedMemberID, infectionDateTime, immunityDateTime);
                                                 node.AddNode(treeNode);
@@ -152,42 +212,28 @@ namespace Data
             }
         }
 
-
-        //BFS
-        private TreeNode SearchInfectedPerson(TreeNode tree, Predicate<TreeNode> match)
-        {
-            var queue = new Queue<TreeNode>();
-
-            queue.Enqueue(tree);
-
-            while (queue.Count > 0)
-            {
-                var node = queue.Dequeue();
-
-                if (match(node))
-                    return node;
-
-                foreach (var child in node.Children)
-                {
-                    queue.Enqueue(child);
-                }
-            }
-
-            return null;
-        }
-
-        //BFT
-        public void CalculateInfectedPersonsOnPeak(TreeNode tree)
+        /// <summary>
+        /// Метод подсчёта заражённых членов и потери экономики в человеко-часах
+        /// </summary>
+        /// <param name="tree">корень дерева</param>
+        public void CalculateInfectedMemberAndManHoursLost(TreeNode tree)
         {
             if (tree == null)
                 return;
 
+            //Реализация обхода по ширине (Breadth first traversing)
             var queue = new Queue<TreeNode>();
             queue.Enqueue(tree);
 
             while (queue.Count > 0)
             {
                 var node = queue.Dequeue();
+
+                if (node.ImmunityDateTime != DateTime.MinValue)
+                {
+                    // Объединил логику нахождения заражённых с подсчётом человека часов в пользу производительности
+                    ManHoursLost += (node.ImmunityDateTime - node.InfectionDateTime).Days * 8;
+                }
 
                 switch ((Monthes)node.InfectionDateTime.Month)
                 {
@@ -235,42 +281,11 @@ namespace Data
                 }
             }
 
+            // Нахождение максимального количество заражённых исходя из статистики по месяцам
             MaxNumberOfInfected = NumbersOfInfected.Max();
+
+            //Нахождения пикового месяца пандемии по количеству заражённых
             PandemiaPeakMonth = ((Monthes)Array.IndexOf(NumbersOfInfected, MaxNumberOfInfected)).ToString();
-        }
-
-        public bool SaveTreeToFile(string path, TreeNode tree)
-        {
-            try
-            {
-                File.Delete(path);
-                File.WriteAllText(path, "");
-
-                Print(path, tree);
-
-                return IsSaved = true;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-
-                return IsSaved = false;
-            }
-        }
-
-        private void Print(string path, TreeNode tree, string trim = "")
-        {
-            foreach (var node in tree.Children)
-            {
-                string line = string.Format("{0} ID: {1} Infection time: {2:dd.MM.yyyy HH:mm:ss}", trim, node.MemberID, node.InfectionDateTime);
-                
-                using (var sw = new StreamWriter(path, true))
-                {
-                    sw.WriteLine(line);
-                }
-
-                Print(path, node, trim + "     ");
-            }
         }
     }
 }

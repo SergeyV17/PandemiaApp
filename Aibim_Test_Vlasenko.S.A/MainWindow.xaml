@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Data;assembly=Data"
         mc:Ignorable="d"
-        Title="Pandemia" Height="660" Width="1500"
-        MinHeight="660" MinWidth="870">
+        Title="Pandemia" Height="760" Width="1510"
+        MinHeight="760" MinWidth="1510">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="300*"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="120"/>
+            <RowDefinition Height="170"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="400*"/>
@@ -32,16 +32,20 @@
                 Header="File">
                 <MenuItem 
                     Header="Load"
-                    x:Name="Load"
-                    Click="LoadData_Click"/>
+                    x:Name="LoadBtn"
+                    Click="LoadDataBtn_Click"/>
                 <MenuItem 
                     Header="Exit"
-                    x:Name="Exit"
-                    Click="Exit_Click"/>
+                    x:Name="ExitBtn"
+                    Click="ExitBtn_Click"/>
             </MenuItem>
+            <MenuItem
+                Header="About"
+                x:Name="AboutBtn"
+                Click="AboutBtn_Click"/>
         </Menu>
 
-        <!--Titles-->
+        <!--Titles: Persons, Contacts, Infection tree-->
         <Border
             Grid.Row="1"
             Grid.Column="0"
@@ -146,7 +150,7 @@
                         FontSize="14"
                         >
                         <TextBlock.Text>
-                            <MultiBinding StringFormat="{} ID: {0} Infection Time: {1:dd.MM.yyyy HH:mm:ss}">
+                            <MultiBinding StringFormat="{} ID: {0} Infection time: {1:dd.MM.yyyy HH:mm:ss}">
                                 <Binding Path="MemberID" />
                                 <Binding Path="InfectionDateTime" />
                             </MultiBinding>
@@ -156,7 +160,30 @@
             </TreeView.ItemTemplate>
         </TreeView>
 
-        <!--Commands title-->
+        <!--Loading panel-->
+        <StackPanel
+            Name="LoadingPanel"
+            Grid.Row="2"
+            Grid.Column="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="Hidden"
+            >
+            <TextBlock 
+                x:Name="ProgressBarTxtBl"
+                Text="Loading..."
+                HorizontalAlignment="Center"
+                />
+            <ProgressBar
+                x:Name="progressBar"
+                Minimum="0"
+                Maximum="4"
+                Width="300"
+                Margin="5"
+                />
+        </StackPanel>
+            
+        <!--Titles: Commands, Virus settings, Information-->
         <Border
             Grid.Row="3"
             Grid.Column="0"
@@ -172,8 +199,20 @@
                 Margin="10,0">
             </TextBlock>
         </Border>
-
-        <!--Information title-->
+        <Border
+            Grid.Row="3"
+            Grid.Column="1"
+            BorderBrush="Gray" 
+            BorderThickness="1"
+            >
+            <TextBlock
+                Text="Virus settings"
+                FontSize="16"
+                FontWeight="Medium"
+                VerticalAlignment="Center"
+                Margin="10,0">
+            </TextBlock>
+        </Border>
         <Border
             Grid.Row="3"
             Grid.Column="2"
@@ -195,76 +234,236 @@
             Grid.ColumnSpan="3"
             BorderBrush="Gray" 
             BorderThickness="1">
-            <StackPanel>
-                <Button
-                    x:Name="ShowAverageAgeByName"
+            <StackPanel 
+                Orientation="Horizontal">
+                <StackPanel>
+                    <!--ShowAverageAgeByNameBtn-->
+                    <Button
+                    x:Name="ShowAverageAgeByNameBtn"
                     Content="Show average age by name"
                     FontSize="14"
                     Width="180"
                     HorizontalAlignment="Left"
                     Margin="10 10 0 0"
-                    Click="ShowAverageAgeByName_Click"
-                    IsEnabled="{Binding Path=IsCreated}"/>
-                <Button
-                    x:Name="ShowDangerousContacts"
+                    Click="ShowAverageAgeByNameBtn_Click"
+                    IsEnabled="{Binding Path=DataIsLoaded}"/>
+                    <!--ShowDangerousContactsBtn-->
+                    <Button
+                    x:Name="ShowDangerousContactsBtn"
                     Content="Show dangerous contacts"
                     FontSize="14"
                     Width="180"
                     HorizontalAlignment="Left"
                     Margin="10 10 0 0"
-                    Click="ShowDangerousContacts_Click"
-                    IsEnabled="{Binding Path=IsCreated}"/>
-                <Button
-                    x:Name="SaveInfectionTreeToTxt"
+                    Click="ShowDangerousContactsBtn_Click"
+                    IsEnabled="{Binding Path=DataIsLoaded}"/>
+                </StackPanel>
+                <StackPanel>
+                    <!--CreateInfectionTreeBtn-->
+                    <Button
+                    x:Name="CreateInfectionTreeBtn"
+                    Content="Create Infection Tree"
+                    FontSize="14"
+                    Width="180"
+                    HorizontalAlignment="Left"
+                    Margin="10 10 0 0"
+                    Click="CreateInfectionTreeBtn_Click"
+                    IsEnabled="{Binding Path=DataIsLoaded}"/>
+                    <!--SaveInfectionTreeToTxtBtn-->
+                    <Button
+                    x:Name="SaveInfectionTreeToTxtBtn"
                     Content="Save infection tree to txt"
                     FontSize="14"
                     Width="180"
                     HorizontalAlignment="Left"
                     Margin="10 10 0 0"
-                    Click="SaveInfectionTreeToTxt_Click"
-                    IsEnabled="{Binding Path=IsCreated}"/>
+                    Click="SaveInfectionTreeToTxtBtn_Click"
+                    IsEnabled="{Binding Path=DataIsLoaded}"/>
+                </StackPanel>
             </StackPanel>
         </Border>
-        
-            <!--Information-->
-            <Border
-                Grid.Row="4"
-                Grid.Column="2"
-                BorderBrush="Gray" 
-                BorderThickness="1">
-                <StackPanel>
-                <TextBlock
-                        x:Name="PandemiaPeakMonth"
+
+        <!--Virus settings-->
+        <Border
+            Grid.Row="4"
+            Grid.Column="1"
+            BorderBrush="Gray" 
+            BorderThickness="1">
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=TreeIsCreated}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=TreeIsCreated}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <StackPanel
+                    Orientation="Horizontal">
+                    <!--Safe time:-->
+                    <TextBlock
+                        Text="Safe time:"
+                        FontSize="14"
+                        Margin="10 10 0 0">
+                        <TextBlock.ToolTip>
+                            During this period, the disease does not have time to spread.
+                        </TextBlock.ToolTip>
+                    </TextBlock>
+                    <TextBox
+                        x:Name ="VirusSafeTimeTxtBx"
+                        Text="{Binding Path=(local:Virus.SafeTimeStr), Mode=OneWay}"
                         FontSize="14"
                         Margin="10 10 0 0"
+                        Width="30"/>
+                    <TextBlock
+                        Text="minutes"
+                        FontSize="14"
+                        Margin="10 10 0 0"/>
+                </StackPanel>
+                <StackPanel
+                    Orientation="Horizontal">
+                    <!--First stage of disease:-->
+                    <TextBlock
+                        Text="First stage of disease:"
+                        FontSize="14"
+                        Margin="10 10 0 0">
+                        <TextBlock.ToolTip>
+                            During this period, the disease is not transmitted.
+                        </TextBlock.ToolTip>
+                    </TextBlock>
+                    <TextBox
+                        x:Name ="FirstStageOfDiseaseTxtBx"
+                        Text="{Binding StringFormat={}{0:dd}, Path=(local:Virus.FirstStageOfTheDisease)}"
+                        FontSize="14"
+                        Margin="10 10 0 0"
+                        Width="30"/>
+                    <TextBlock
+                        Text="days"
+                        FontSize="14"
+                        Margin="10 10 0 0"/>
+                </StackPanel>
+                <StackPanel
+                    Orientation="Horizontal">
+                    <!--Second stage of disease:-->
+                    <TextBlock
+                        Text="Second stage of disease:"
+                        FontSize="14"
+                        Margin="10 10 0 0">
+                        <TextBlock.ToolTip>
+                            During this period, the disease begins to spread.
+                        </TextBlock.ToolTip>
+                    </TextBlock>
+                    <TextBox
+                        x:Name ="SecondtStageOfDiseaseTxtBx"
+                        Text="{Binding StringFormat={}{0:dd}, Path=(local:Virus.SecondStageOfTheDisease)}"
+                        FontSize="14"
+                        Margin="10 10 0 0"
+                        Width="30"/>
+                    <TextBlock
+                        Text="days"
+                        FontSize="14"
+                        Margin="10 10 0 0"/>
+                </StackPanel>
+                <StackPanel
+                    Orientation="Horizontal">
+                    <!--Immunity time:-->
+                    <TextBlock
+                        Text="Immunity time:"
+                        FontSize="14"
+                        Margin="10 10 0 0">
+                        <TextBlock.ToolTip>
+                            During this period, a person cannot become infected.
+                        </TextBlock.ToolTip>
+                    </TextBlock>
+                    <TextBox
+                        x:Name ="ImmunityTimeTxtBx"
+                        Text="{Binding StringFormat={}{0:dd}, Path=(local:Virus.ImmunityTime)}"
+                        FontSize="14"
+                        Margin="10 10 0 0"
+                        Width="30"/>
+                    <TextBlock
+                        Text="days"
+                        FontSize="14"
+                        Margin="10 10 0 0"/>
+                </StackPanel>
+                <!--AcceptVirusSettingsAndRefreshTreeBtn-->
+                <Button
+                    x:Name="AcceptVirusSettingsAndRefreshTreeBtn"
+                    Content="Accept settings and refresh tree"
+                    FontSize="14"
+                    Width="220"
+                    HorizontalAlignment="Left"
+                    Margin="10 10 0 0"
+                    Click="AcceptVirusSettingsAndRefreshTreeBtn_Click"/>
+            </StackPanel>
+        </Border>
+
+        <!--Information-->
+        <Border
+            Grid.Row="4"
+            Grid.Column="2"
+            BorderBrush="Gray" 
+            BorderThickness="1">
+            <StackPanel>
+                <!--PandemiaPeakMonth-->
+                <TextBlock
+                    x:Name="PandemiaPeakMonthTxtBl"
+                    FontSize="14"
+                    Margin="10 10 0 0"
                     >
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=IsCreated}" Value="True">
+                                <DataTrigger Binding="{Binding Path=TreeIsCreated}" Value="True">
                                     <Setter Property="Text" Value="{Binding StringFormat={}Pandemia peak month: {0}, Path=(local:TreeNode.PandemiaPeakMonth)}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-                    
+                <!--MaxNumberOfInfected-->
                 <TextBlock
-                        x:Name="MaxNumberOfInfected"
-                        FontSize="14"
-                        Margin="10 10 0 0"
+                    x:Name="MaxNumberOfInfectedTxtBl"
+                    FontSize="14"
+                    Margin="10 10 0 0"
                     >
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=IsCreated}" Value="True">
-                                    <Setter Property="Text" Value="{Binding StringFormat={}The number of people infected at the peak: {0}, Path=(local:TreeNode.MaxNumberOfInfected)}"/>
+                                <DataTrigger Binding="{Binding Path=TreeIsCreated}" Value="True">
+                                    <Setter Property="Text" Value="{Binding StringFormat={}The number of people infected at the peak: {0:N0}, Path=(local:TreeNode.MaxNumberOfInfected)}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
-                    </TextBlock>
+                </TextBlock>
+                <!--LostedManHours-->
+                <TextBlock
+                    x:Name="LostedManHoursTxtBl"
+                    FontSize="14"
+                    Margin="10 10 0 0"
+                    >
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=TreeIsCreated}" Value="True">
+                                    <Setter Property="Text" Value="{Binding StringFormat={}The number of man hour lost: {0:N0} hours, Path=(local:TreeNode.ManHoursLost)}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </StackPanel>
-            </Border>
+        </Border>
     </Grid>
 </Window>

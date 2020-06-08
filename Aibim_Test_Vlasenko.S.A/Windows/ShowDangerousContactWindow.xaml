@@ -42,7 +42,7 @@
                 Margin="10,4,0,0"/>
             <!--Textbox start-->
             <TextBox
-                Name="TxtBoxStart"
+                Name="StartTxtBx"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                 BorderBrush="LightGray"
@@ -60,7 +60,7 @@
                 Margin="10,4,0,0"/>
             <!--Textbox end-->
             <TextBox
-                Name="TxtBoxEnd"
+                Name="EndTxtBx"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                 BorderBrush="LightGray"
@@ -73,7 +73,7 @@
         <!--Show result button-->
         <Button
             Grid.Row="3"
-            x:Name="ShowResult"
+            x:Name="ShowResultBtn"
             VerticalAlignment="Top"
             HorizontalAlignment="Center"
             Content="Show result"
@@ -83,7 +83,7 @@
             Width="120"
             Height="25"
             Margin="91,10,81,0"
-            Click="ShowResult_Click"
+            Click="ShowResultBtn_Click"
             IsDefault="True">
         </Button>
     </Grid>

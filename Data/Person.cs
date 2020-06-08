@@ -1,7 +1,7 @@
 ﻿namespace Data
 {
     /// <summary>
-    /// Person class
+    /// Класс членов
     /// </summary>
     public class Person
     {

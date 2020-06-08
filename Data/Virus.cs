@@ -1,30 +1,100 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Data
 {
-    static class Virus
+    /// <summary>
+    /// Класс вируса
+    /// </summary>
+    public static class Virus
     {
-        public static readonly TimeSpan _safeTime;
+        /// <summary>
+        /// Безопасное время при котором вирус не передаётся
+        /// </summary>
+        public static  TimeSpan SafeTime {get; set;}
 
-        public static readonly TimeSpan _firstStageOfTheDisease;
+        public static string SafeTimeStr // Добавил свойство т.к. не смог реализовать привязку в 0:mm в xaml
+        {
+            get { return string.Format("{0:mm}", SafeTime); }
+        }
 
-        public static readonly TimeSpan _secondStageOfTheDisease;
+        /// <summary>
+        /// Первая стадия болезни (вирус не передаётся)
+        /// </summary>
+        public static TimeSpan FirstStageOfTheDisease { get; private set; }
 
-        public static readonly TimeSpan _totalDiseaseTime;
+        /// <summary>
+        /// Вторая стадия болезни (вирус передаётся)
+        /// </summary>
+        public static TimeSpan SecondStageOfTheDisease { get; private set; }
 
-        public static readonly TimeSpan _immunityTime;
+        /// <summary>
+        /// Общее время болезни
+        /// </summary>
+        public static TimeSpan TotalDiseaseTime { get; private set; }
+
+        /// <summary>
+        /// Время действия иммунитета
+        /// </summary>
+        public static TimeSpan ImmunityTime { get; private set; }
 
         static Virus()
         {
-            _safeTime = TimeSpan.FromMinutes(5);
+            SafeTime = TimeSpan.FromMinutes(5);
 
-            _firstStageOfTheDisease = TimeSpan.FromDays(4);
+            FirstStageOfTheDisease = TimeSpan.FromDays(4);
 
-            _secondStageOfTheDisease = TimeSpan.FromDays(12);
+            SecondStageOfTheDisease = TimeSpan.FromDays(12);
 
-            _totalDiseaseTime = _firstStageOfTheDisease + _secondStageOfTheDisease;
+            TotalDiseaseTime = FirstStageOfTheDisease + SecondStageOfTheDisease;
 
-            _immunityTime = TimeSpan.FromDays(14);
+            ImmunityTime = TimeSpan.FromDays(14);
+        }
+
+        public static void AcceptVirusSettings(string safeTime, string firstStageOfTheDisease, string secondStageOfTheDisease, string immunityTime)
+        {
+
+            if (ErrorProcessing(safeTime, firstStageOfTheDisease, secondStageOfTheDisease, immunityTime))
+            {
+                throw new Exception("Parsing error");
+            }
+            else
+            {
+                Virus.SafeTime = TimeSpan.FromMinutes(int.Parse(safeTime));
+
+                Virus.FirstStageOfTheDisease = TimeSpan.FromDays(int.Parse(firstStageOfTheDisease));
+
+                Virus.SecondStageOfTheDisease = TimeSpan.FromDays(int.Parse(secondStageOfTheDisease));
+
+                Virus.ImmunityTime = TimeSpan.FromDays(int.Parse(immunityTime));
+
+                TotalDiseaseTime = FirstStageOfTheDisease + SecondStageOfTheDisease;
+            }
+        }
+
+
+        private static bool ErrorProcessing(string safeTime, string firstStageOfTheDisease, string secondStageOfTheDisease, string immunityTime)
+        {
+            bool error = false;
+
+            int safeTimeRes;
+            int firstStageOfTheDiseaseRes;
+            int secondStageOfTheDiseaseRes;
+            int immunityTimeRes;
+
+            if (!int.TryParse(safeTime, out safeTimeRes))
+                error = true;
+
+            if (!int.TryParse(firstStageOfTheDisease, out firstStageOfTheDiseaseRes))
+                error = true;
+
+            if (!int.TryParse(secondStageOfTheDisease, out secondStageOfTheDiseaseRes))
+                error = true;
+
+            if (!int.TryParse(immunityTime, out immunityTimeRes))
+                error = true;
+
+            return error;
         }
     }
 }

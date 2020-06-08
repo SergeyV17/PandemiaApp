@@ -121,6 +121,10 @@
       <Project>{c2164102-28c5-472b-a3d2-929f548d6c7f}</Project>
       <Name>Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExportData\ExportData.csproj">
+      <Project>{70edf39e-4644-43cb-bf24-ee254c3f5346}</Project>
+      <Name>ExportData</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

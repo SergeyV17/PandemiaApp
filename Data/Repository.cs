@@ -8,21 +8,41 @@ using System.Linq;
 namespace Data
 {
     /// <summary>
-    /// Repository
+    /// Репозиторий
     /// </summary>
     public class Repository: INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private bool _isCreated;
+        private bool _dataIsLoaded;
 
-        public bool IsCreated
+        public bool DataIsLoaded
         {
-            get { return _isCreated; }
+            get { return _dataIsLoaded; }
             set
             {
-                _isCreated = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("IsCreated"));
+                _dataIsLoaded = value;
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("DataIsLoaded"));
+                }
+            }
+        }
+
+        private bool _treeIsCreated;
+
+        public bool TreeIsCreated
+        {
+            get { return _treeIsCreated; }
+            set
+            {
+                _treeIsCreated = value;
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("TreeIsCreated"));
+                }
             }
         }
 
@@ -35,33 +55,53 @@ namespace Data
         {
             Persons = new List<Person>();
             Contacts = new List<Contact>();
-            Tree = new TreeNode();
         }
 
         /// <summary>
-        /// Load data method
+        /// Метод загрузки данных из Json
         /// </summary>
-        /// <param name="personPath">path to file with persons</param>
-        /// <param name="contactsPath">path to file with contacts</param>
-        /// <returns>IsCreated</returns>
+        /// <param name="personPath">путь к json содержащий список персон</param>
+        /// <param name="contactsPath">путь к json содержащий список контактов </param>
+        /// <returns>DataIsLoaded</returns>
         public bool LoadDataToRepository(string personPath, string contactsPath)
         {
             try
             {
-                //load data
-                Persons = Deserialize.LoadJson<Person>(personPath).OrderBy(e => e.ID).ToList(); // sort by ID for convenience
-                Contacts = Deserialize.LoadJson<Contact>(contactsPath).OrderBy(e => e.From).ToList(); // sort by date for convenience
+                //Загрузка данных из Json
+                Persons = Deserialize.LoadJson<Person>(personPath).OrderBy(e => e.ID).ToList(); // Сортировка по ID (для удобства)
+                Contacts = Deserialize.LoadJson<Contact>(contactsPath).OrderBy(e => e.From).ToList(); // Сортировка по дате (для удобства)
 
-                Tree.CreateTree(Tree, Contacts, new DateTime(2020,02,01));
-                Tree.CalculateInfectedPersonsOnPeak(Tree);
-
-                return IsCreated = true;
+                return DataIsLoaded = true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
 
-                return IsCreated = false;
+                return DataIsLoaded = false;
+            }
+        }
+
+        /// <summary>
+        /// Метод создания дерева
+        /// </summary>
+        /// <returns>TreeIsCreated</returns>
+        public bool CreateInfectionTree()
+        {
+            TreeIsCreated = false;
+
+            try
+            {
+                Tree = new TreeNode();
+                Tree.CreateTree(Tree, Contacts, new DateTime(2020, 02, 01));
+                Tree.CalculateInfectedMemberAndManHoursLost(Tree);
+
+                return TreeIsCreated = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+
+                return TreeIsCreated = false;
             }
         }
     }

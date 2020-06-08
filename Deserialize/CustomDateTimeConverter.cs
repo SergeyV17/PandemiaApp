@@ -3,6 +3,9 @@ using System;
 
 namespace ImportData
 {
+    /// <summary>
+    /// Кастомный конвертер DateTime
+    /// </summary>
     public class CustomDateTimeConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)

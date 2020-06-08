@@ -3,7 +3,7 @@
 namespace Data
 {
     /// <summary>
-    /// Contact class
+    /// Класс контактов
     /// </summary>
     public class Contact
     {

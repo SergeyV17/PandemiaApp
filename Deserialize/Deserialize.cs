@@ -5,16 +5,16 @@ using Newtonsoft.Json;
 namespace ImportData
 {
     /// <summary>
-    /// Deserialize from json class
+    /// Класс десериализации из Json
     /// </summary>
     public static class Deserialize
     {
         /// <summary>
-        /// Deserealize from json method
+        /// Метод десериализации из Json
         /// </summary>
-        /// <typeparam name="T">deserialize object</typeparam>
-        /// <param name="path">path to file</param>
-        /// <returns>list of objects</returns>
+        /// <typeparam name="T">объект десериализации</typeparam>
+        /// <param name="path">путь к файлу</param>
+        /// <returns>список объектов</returns>
         public static List<T> LoadJson<T>(string path)
         {
             string json = File.ReadAllText(path);

@@ -32,7 +32,7 @@
                     Margin="10,4,0,0"/>
             <!--Textbox for enter-->
             <TextBox
-                    Name="TxtBoxLastName"
+                    Name="LastNameTxtBx"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Left"
                     BorderBrush="LightGray"
@@ -50,7 +50,7 @@
                     Margin="10,4,0,0"/>
             <!--Textbox for enter-->
             <TextBox
-                    Name="TxtBoxFirstName"
+                    Name="FirstNameTxtBx"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Left"
                     BorderBrush="LightGray"
@@ -63,7 +63,7 @@
         <!--Show result button-->
         <Button
                 Grid.Row="3"
-                x:Name="ShowResult"
+                x:Name="ShowResultBtn"
                 VerticalAlignment="Top"
                 HorizontalAlignment="Center"
                 Content="Show result"
@@ -73,7 +73,7 @@
                 Width="120"
                 Height="25"
                 Margin="91,10,81,0"
-                Click="ShowResult_Click"
+                Click="ShowResultBtn_Click"
                 IsDefault="True">
         </Button>
     </Grid>

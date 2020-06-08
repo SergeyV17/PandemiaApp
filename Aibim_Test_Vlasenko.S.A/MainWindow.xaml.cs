@@ -1,6 +1,12 @@
 ﻿using Aibim_Test_Vlasenko.S.A.Windows;
 using System.Windows;
 using Data;
+using ExportData;
+using System;
+using System.IO;
+using System.ComponentModel;
+using System.Windows.Threading;
+using System.Threading;
 
 namespace Aibim_Test_Vlasenko.S.A
 {
@@ -9,11 +15,12 @@ namespace Aibim_Test_Vlasenko.S.A
     /// </summary>
     public partial class MainWindow : Window
     {
-        public Repository Repository { get; private set; } // Repository for data
+        public Repository Repository { get; private set; } // Репозиторий данных
 
-        private readonly string small_data_persons; //path fields
+        private readonly string small_data_persons; //поля для путей
         private readonly string small_data_contacts;
         private readonly string infection_tree;
+        private readonly string about;
 
         public MainWindow()
         {
@@ -24,6 +31,7 @@ namespace Aibim_Test_Vlasenko.S.A
             small_data_persons = @"Data\JSON\small_data_persons.json";
             small_data_contacts = @"Data\JSON\small_data_contacts.json";
             infection_tree = @"InfectionTree\infection_tree.txt";
+            about = @"Resources\About.txt";
 
             DataContext = Repository;
         }
@@ -31,23 +39,22 @@ namespace Aibim_Test_Vlasenko.S.A
         #region Menu
 
         /// <summary>
-        /// Load data button handler
+        /// Логика при нажатии кнопки LoadDataBtn
         /// </summary>
-        /// <param name="sender">object</param>
-        /// <param name="e">args</param>
-        private void LoadData_Click(object sender, RoutedEventArgs e)
+        /// <param name="sender">отправитель</param>
+        /// <param name="e">аргументы</param>
+        private void LoadDataBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (!Repository.IsCreated)
+            if (!Repository.DataIsLoaded)
             {
-                // Load data to repository
+                // Загрузка данных в репозиторий
                 bool success = Repository.LoadDataToRepository(small_data_persons, small_data_contacts);
 
                 if (success)
                 {
-                    // Fill tables and treeview itemsources
+                    // Заполнение таблиц
                     PersonTable.ItemsSource = Repository.Persons;
                     ContactsTable.ItemsSource = Repository.Contacts;
-                    InfectionTree.ItemsSource = Repository.Tree.Children;
                 }
                 else
                 {
@@ -73,11 +80,11 @@ namespace Aibim_Test_Vlasenko.S.A
         }
 
         /// <summary>
-        /// Exit button handler
+        /// Логика при нажатии кнопки ExitBtn
         /// </summary>
-        /// <param name="sender">object</param>
-        /// <param name="e">args</param>
-        private void Exit_Click(object sender, RoutedEventArgs e)
+        /// <param name="sender">отправитель</param>
+        /// <param name="e">аргументы</param>
+        private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show(this,
                 "Are you sure, you want to exit?",
@@ -91,16 +98,30 @@ namespace Aibim_Test_Vlasenko.S.A
                 return;
         }
 
+        /// <summary>
+        /// Логика при нажатии кнопки AboutBtn
+        /// </summary>
+        /// <param name="sender">отправитель</param>
+        /// <param name="e">аргументы</param>
+        private void AboutBtn_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(this,
+                File.ReadAllText(about),
+                Title,
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+
         #endregion
 
         #region Command panel
 
         /// <summary>
-        /// Show average age by name button handler
+        /// Логика при нажатии кнопки ShowAverageAgeByNameBtn
         /// </summary>
-        /// <param name="sender">object</param>
-        /// <param name="e">args</param>
-        private void ShowAverageAgeByName_Click(object sender, RoutedEventArgs e)
+        /// <param name="sender">отправитель</param>
+        /// <param name="e">аргументы</param>
+        private void ShowAverageAgeByNameBtn_Click(object sender, RoutedEventArgs e)
         {
             var calculateAverageAgeWindow = new CalculateAverageAgeWindow { Owner = this };
 
@@ -108,11 +129,11 @@ namespace Aibim_Test_Vlasenko.S.A
         }
 
         /// <summary>
-        /// Show dangerous contacts button handler
+        /// Логика при нажатии кнопки ShowDangerousContactBtn
         /// </summary>
-        /// <param name="sender">object</param>
-        /// <param name="e">args</param>
-        private void ShowDangerousContacts_Click(object sender, RoutedEventArgs e)
+        /// <param name="sender">отправитель</param>
+        /// <param name="e">аргументы</param>
+        private void ShowDangerousContactsBtn_Click(object sender, RoutedEventArgs e)
         {
             var showDangerousContactsWindow = new ShowDangerousContactsWindow() { Owner = this };
 
@@ -120,13 +141,59 @@ namespace Aibim_Test_Vlasenko.S.A
         }
 
         /// <summary>
-        /// Create infection tree
+        /// Логика при нажатии кнопки CreateInfectionTreeBtn
         /// </summary>
-        /// <param name="sender">object</param>
-        /// <param name="e">args</param>
-        private void SaveInfectionTreeToTxt_Click(object sender, RoutedEventArgs e)
+        /// <param name="sender">отправитель</param>
+        /// <param name="e">аргументы</param>
+        private void CreateInfectionTreeBtn_Click(object sender, RoutedEventArgs e)
         {
-            bool success = Repository.Tree.SaveTreeToFile(infection_tree, Repository.Tree);
+            LoadingPanel.Visibility = Visibility.Visible;
+
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += (s, a) =>
+            {
+                // Создание дерева
+                bool success = Repository.CreateInfectionTree();
+
+                if (success)
+                {
+                    //Используем Dispatcher для выполнения метода в потоке UI
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                        (ThreadStart)delegate
+                        {
+                            // Заполнение дерева
+                            InfectionTree.ItemsSource = Repository.Tree.Children;
+                        });
+                }
+                else
+                {
+                    MessageBox.Show(
+                        this,
+                        "Tree cannot create. Something goes wrong.",
+                        Title,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                    );
+                }
+            };
+
+            worker.RunWorkerAsync();
+
+            worker.RunWorkerCompleted += (s, a) =>
+            {
+                LoadingPanel.Visibility = Visibility.Hidden;
+            };
+        }
+
+        /// <summary>
+        /// Логика при нажатии кнопки SaveInfectionTreeToTxtBtn
+        /// </summary>
+        /// <param name="sender">отправитель</param>
+        /// <param name="e">аргументы</param>
+        private void SaveInfectionTreeToTxtBtn_Click(object sender, RoutedEventArgs e)
+        {
+            bool success = SaveTree.SaveTreeToFile(infection_tree, Repository.Tree);
 
             if (success)
             {
@@ -142,7 +209,36 @@ namespace Aibim_Test_Vlasenko.S.A
             {
                 MessageBox.Show(
                     this,
-                    "Something goes wrong",
+                    "Tree cannot save. Something goes wrong",
+                    Title,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+        }
+
+        #endregion
+
+        #region Virus settings
+
+        /// <summary>
+        /// Логика при нажатии кнопки AcceptVirusSettingsBtn
+        /// </summary>
+        /// <param name="sender">отправитель</param>
+        /// <param name="e">аргументы</param>
+        private void AcceptVirusSettingsAndRefreshTreeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Изменение параметров вируса и вызов метода построения дерева
+                Virus.AcceptVirusSettings(VirusSafeTimeTxtBx.Text, FirstStageOfDiseaseTxtBx.Text, SecondtStageOfDiseaseTxtBx.Text, ImmunityTimeTxtBx.Text);
+                CreateInfectionTreeBtn_Click(sender, e);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(
+                    this,
+                    "Parsing error. You entered invalid characters on virus settings.",
                     Title,
                     MessageBoxButton.OK,
                     MessageBoxImage.Error

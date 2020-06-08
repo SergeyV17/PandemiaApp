@@ -16,17 +16,17 @@ namespace Aibim_Test_Vlasenko.S.A.Windows
         }
 
         /// <summary>
-        /// Show result button handler
+        /// Логика при нажатии кнопки ShowResultBtn
         /// </summary>
-        /// <param name="sender">object</param>
-        /// <param name="e">args</param>
-        private void ShowResult_Click(object sender, RoutedEventArgs e)
+        /// <param name="sender">отправитель</param>
+        /// <param name="e">аргументы</param>
+        private void ShowResultBtn_Click(object sender, RoutedEventArgs e)
         {
             MainWindow main = this.Owner as MainWindow;
 
-            string firstName = TxtBoxFirstName.Text.Trim();
+            string firstName = FirstNameTxtBx.Text.Trim();
 
-            string lastName = TxtBoxLastName.Text.Trim();
+            string lastName = LastNameTxtBx.Text.Trim();
 
             if (ErrorProcessing(firstName) || ErrorProcessing(lastName))
             {
@@ -40,10 +40,10 @@ namespace Aibim_Test_Vlasenko.S.A.Windows
             {
                 string soughtName = lastName + " " + firstName;
 
-                // Find all persons with identical names
+                // Поиск всех членов с одинаковыми фамилией и именем
                 var namesakes = main.Repository.Persons.FindAll(p => p.Name == soughtName);
 
-                //if not found
+                // Если не найдено ни одного члена
                 if (namesakes.Count == 0)
                 {
                     MessageBox.Show(
@@ -54,7 +54,7 @@ namespace Aibim_Test_Vlasenko.S.A.Windows
                 }
                 else
                 {
-                    // if found calculate average
+                    // Если найдено, расчитывается средний возраст
                     var average = Math.Round(namesakes.Average(p => p.Age));
 
                     MessageBox.Show(
@@ -67,13 +67,13 @@ namespace Aibim_Test_Vlasenko.S.A.Windows
         }
 
         /// <summary>
-        /// Error processing method
+        /// Метод обработки ошибок
         /// </summary>
-        /// <param name="soughtName">sought name</param>
-        /// <returns>error sign</returns>
+        /// <param name="soughtName">искомое имя</param>
+        /// <returns>ошибка ввода</returns>
         private bool ErrorProcessing(string initial)
         {
-            // Validation of input
+            // Валидация ввода
             if (initial.Any(e => !char.IsLetter(e)))
                 return true;
 

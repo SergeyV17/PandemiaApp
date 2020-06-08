@@ -14,30 +14,30 @@ namespace Aibim_Test_Vlasenko.S.A.Windows
         }
 
         /// <summary>
-        /// Show result button handler
+        /// Логика при нажатии кнопки ShowResultBtn
         /// </summary>
-        /// <param name="sender">object</param>
-        /// <param name="e">args</param>
-        private void ShowResult_Click(object sender, RoutedEventArgs e)
+        /// <param name="sender">отправитель</param>
+        /// <param name="e">аргументы</param>
+        private void ShowResultBtn_Click(object sender, RoutedEventArgs e)
         {
             MainWindow main = this.Owner as MainWindow;
 
-            var start = TxtBoxStart.Text;
-            var end = TxtBoxEnd.Text;
+            var start = StartTxtBx.Text;
+            var end = EndTxtBx.Text;
 
             DateTime intervalStart;
             DateTime intervalEnd;
 
-            // Validation of input
+            // Валидация входных параметров
             if (DateTime.TryParse(start, out intervalStart) && DateTime.TryParse(end, out intervalEnd))
             {
-                // Find contacts that lasted more then 10 minutes in a given interval
+                // Поиск связей которые были в контакте более 10 минут
                 var dangerousContacts = main.Repository.Contacts.FindAll(c => 
                     c.From > intervalStart && 
                     c.To < intervalEnd && 
                     c.To - c.From > TimeSpan.FromMinutes(10));
 
-                //if no contacts found in a given interval
+                // Если связи не найдены
                 if (dangerousContacts.Count == 0)
                 {
                     MessageBox.Show(
@@ -49,7 +49,7 @@ namespace Aibim_Test_Vlasenko.S.A.Windows
                     return;
                 }
 
-                //Initialize DangerousContactsWindow and put in parameters dangerousContacts list
+                // Инициализация DangerousContactsWindow и передача в качестве параметров список найденных контактов
                 var dangerousContactsWindow = new DangerousContactsWindow(dangerousContacts) { Owner = main };
 
                 dangerousContactsWindow.Show();

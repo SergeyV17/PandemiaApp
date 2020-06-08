@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImportData", "Deserialize\I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{C2164102-28C5-472B-A3D2-929F548D6C7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportData", "ExportData\ExportData.csproj", "{70EDF39E-4644-43CB-BF24-EE254C3F5346}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{C2164102-28C5-472B-A3D2-929F548D6C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2164102-28C5-472B-A3D2-929F548D6C7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2164102-28C5-472B-A3D2-929F548D6C7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70EDF39E-4644-43CB-BF24-EE254C3F5346}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70EDF39E-4644-43CB-BF24-EE254C3F5346}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70EDF39E-4644-43CB-BF24-EE254C3F5346}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70EDF39E-4644-43CB-BF24-EE254C3F5346}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
