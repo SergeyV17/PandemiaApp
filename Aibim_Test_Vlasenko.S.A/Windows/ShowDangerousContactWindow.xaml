@@ -15,59 +15,30 @@
 
         <!--Title-->
         <TextBlock 
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center"
-            Text="Show contacts that lasted more then 10 minutes"
-            TextWrapping="Wrap"
-            TextAlignment="Center"
-            FontSize="14"
-            Width="200"/>
+            Style="{StaticResource TitleForLargeTxtTextBlockStyle}"
+            Text="Show contacts that lasted more then 10 minutes"/>
         <StackPanel
                  Grid.Row="1">
             <!--Textblock: Enter the interval-->
             <TextBlock 
-                VerticalAlignment="Top"
-                HorizontalAlignment="Left"
-                Text="Enter the datetime interval"
-                FontSize="14"
-                Width="200"
-                Margin="10,4,0,0"/>
+                Style="{StaticResource BaseTextBlockStyle}"
+                Text="Enter the datetime interval"/>
             <!--Textblock: Start-->
             <TextBlock 
-                VerticalAlignment="Top"
-                HorizontalAlignment="Left"
-                Text="Start:"
-                FontSize="14"
-                Width="200"
-                Margin="10,4,0,0"/>
+                Style="{StaticResource BaseTextBlockStyle}"
+                Text="Start:"/>
             <!--Textbox start-->
             <TextBox
                 Name="StartTxtBx"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Left"
-                BorderBrush="LightGray"
-                BorderThickness="1"
-                FontSize="14"
-                Width="200"
-                Margin="10,5,0,5"/>
+                Style="{StaticResource ExtendedTextBoxStyle}"/>
             <!--Textblock: End-->
             <TextBlock 
-                VerticalAlignment="Top"
-                HorizontalAlignment="Left"
-                Text="End:"
-                FontSize="14"
-                Width="200"
-                Margin="10,4,0,0"/>
+                Style="{StaticResource BaseTextBlockStyle}"
+                Text="End:"/>
             <!--Textbox end-->
             <TextBox
                 Name="EndTxtBx"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Left"
-                BorderBrush="LightGray"
-                BorderThickness="1"
-                FontSize="14"
-                Width="200"
-                Margin="10,5,0,5"/>
+                Style="{StaticResource ExtendedTextBoxStyle}"/>
         </StackPanel>
 
         <!--Show result button-->

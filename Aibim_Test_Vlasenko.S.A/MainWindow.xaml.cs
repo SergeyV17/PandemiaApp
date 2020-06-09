@@ -28,8 +28,8 @@ namespace Aibim_Test_Vlasenko.S.A
 
             Repository = new Repository();
 
-            small_data_persons = @"Data\JSON\big_data_persons.json";
-            small_data_contacts = @"Data\JSON\big_data_contacts.json";
+            small_data_persons = @"Data\JSON\small_data_persons.json";
+            small_data_contacts = @"Data\JSON\small_data_contacts.json";
             infection_tree = @"InfectionTree\infection_tree.txt";
             about = @"Resources\About.txt";
 
@@ -147,6 +147,7 @@ namespace Aibim_Test_Vlasenko.S.A
         /// <param name="e">аргументы</param>
         private void CreateInfectionTreeBtn_Click(object sender, RoutedEventArgs e)
         {
+            InfectionTree.Visibility = Visibility.Hidden;
             LoadingPanel.Visibility = Visibility.Visible;
 
             var worker = new BackgroundWorker();
@@ -183,6 +184,7 @@ namespace Aibim_Test_Vlasenko.S.A
             worker.RunWorkerCompleted += (s, a) =>
             {
                 LoadingPanel.Visibility = Visibility.Hidden;
+                InfectionTree.Visibility = Visibility.Visible;
             };
         }
 

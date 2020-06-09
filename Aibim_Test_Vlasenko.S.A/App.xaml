@@ -1,9 +1,26 @@
 ﻿<Application x:Class="Aibim_Test_Vlasenko.S.A.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Aibim_Test_Vlasenko.S.A"
+             xmlns:loc="clr-namespace:Aibim_Test_Vlasenko.S.A"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResourceDictionaries/ButtonDictionary.xaml"/>
+                <ResourceDictionary Source="ResourceDictionaries/TextBlockDictionary.xaml"/>
+                <ResourceDictionary Source="ResourceDictionaries/BorderDictionary.xaml"/>
+                <ResourceDictionary Source="ResourceDictionaries/TextBoxDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
+
+ 
+
+
+
+
+
+
+
+        
 </Application>

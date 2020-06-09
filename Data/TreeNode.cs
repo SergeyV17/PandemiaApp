@@ -30,7 +30,6 @@ namespace Data
         private int[] NumbersOfInfected;
 
         private static int _maxNumberOfInfected;
-
         public static int MaxNumberOfInfected
         {
             get { return _maxNumberOfInfected; }
@@ -42,7 +41,6 @@ namespace Data
         }
 
         private static string _pandemiaPeakMonth;
-
         public static string PandemiaPeakMonth
         {
             get { return _pandemiaPeakMonth; }
@@ -54,7 +52,6 @@ namespace Data
         }
 
         private static int _manHoursLosted;
-
         public static int ManHoursLost
         {
             get { return _manHoursLosted; }
@@ -126,7 +123,7 @@ namespace Data
         /// <param name="contacts">список контактов</param>
         /// <param name="initialDateTime">исходная дата(необходима для создания первого заражённого)</param>
         /// <param name="start">исходная дата</param>
-        public void CreateTree(TreeNode node, List<Contact> contacts, DateTime initialDateTime, DateTime start)
+        private void CreateTree(TreeNode node, List<Contact> contacts, DateTime initialDateTime, DateTime start)
         {
             if (start == initialDateTime)
             {
@@ -218,6 +215,8 @@ namespace Data
         /// <param name="tree">корень дерева</param>
         public void CalculateInfectedMemberAndManHoursLost(TreeNode tree)
         {
+            ManHoursLost = 0;
+
             if (tree == null)
                 return;
 
@@ -232,7 +231,7 @@ namespace Data
                 if (node.ImmunityDateTime != DateTime.MinValue)
                 {
                     // Объединил логику нахождения заражённых с подсчётом человека часов в пользу производительности
-                    ManHoursLost += (node.ImmunityDateTime - node.InfectionDateTime).Days * 8;
+                    ManHoursLost += (node.ImmunityDateTime - node.InfectionDateTime).Days * WorkSchedule.WorkHoursPerDay;
                 }
 
                 switch ((Monthes)node.InfectionDateTime.Month)

@@ -13,7 +13,7 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="300*"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="170"/>
+            <RowDefinition Height="200"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="400*"/>
@@ -49,43 +49,28 @@
         <Border
             Grid.Row="1"
             Grid.Column="0"
-            BorderBrush="Gray" 
-            BorderThickness="1"
-            >
+            Style="{StaticResource BaseBorderStyle}">
             <TextBlock
-                Text="Persons"
-                FontSize="16"
-                FontWeight="Medium"
-                VerticalAlignment="Center"
-                Margin="10,0">
+                Style="{StaticResource ExtendedTextBlockStyle}"
+                Text="Persons">
             </TextBlock>
         </Border>
         <Border
             Grid.Row="1"
             Grid.Column="1"
-            BorderBrush="Gray" 
-            BorderThickness="1" 
-            >
+            Style="{StaticResource BaseBorderStyle}">
             <TextBlock
-                Text="Contacts"
-                FontSize="16"
-                FontWeight="Medium"
-                VerticalAlignment="Center"
-                Margin="10,0">
+                Style="{StaticResource ExtendedTextBlockStyle}"
+                Text="Contacts">
             </TextBlock>
         </Border>
         <Border
             Grid.Row="1"
             Grid.Column="2"
-            BorderBrush="Gray" 
-            BorderThickness="1" 
-            >
+            Style="{StaticResource BaseBorderStyle}">
             <TextBlock
-                Text="Infection tree"
-                FontSize="16"
-                FontWeight="Medium"
-                VerticalAlignment="Center"
-                Margin="10,0">
+                Style="{StaticResource ExtendedTextBlockStyle}"
+                Text="Infection tree">
             </TextBlock>
         </Border>
 
@@ -135,8 +120,7 @@
             Grid.Row="2"
             Grid.Column="2"
             BorderBrush="LightGray" 
-            BorderThickness="1"
-            >
+            BorderThickness="1">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="True"/>
@@ -144,11 +128,9 @@
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate 
-                    ItemsSource="{Binding Path=Children}"
-                    >
+                    ItemsSource="{Binding Path=Children}">
                     <TextBlock 
-                        FontSize="14"
-                        >
+                        FontSize="14">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{} ID: {0} Infection time: {1:dd.MM.yyyy HH:mm:ss}">
                                 <Binding Path="MemberID" />
@@ -185,44 +167,28 @@
         <Border
             Grid.Row="3"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
-            BorderBrush="Gray" 
-            BorderThickness="1"
-            >
+            Style="{StaticResource BaseBorderStyle}">
             <TextBlock
-                Text="Commands"
-                FontSize="16"
-                FontWeight="Medium"
-                VerticalAlignment="Center"
-                Margin="10,0">
+                Style="{StaticResource ExtendedTextBlockStyle}"
+                Text="Commands">
             </TextBlock>
         </Border>
         <Border
             Grid.Row="3"
             Grid.Column="1"
-            BorderBrush="Gray" 
-            BorderThickness="1"
-            >
+            Style="{StaticResource BaseBorderStyle}">
             <TextBlock
-                Text="Virus settings"
-                FontSize="16"
-                FontWeight="Medium"
-                VerticalAlignment="Center"
-                Margin="10,0">
+                Style="{StaticResource ExtendedTextBlockStyle}"
+                Text="Virus settings">
             </TextBlock>
         </Border>
         <Border
             Grid.Row="3"
             Grid.Column="2"
-            BorderBrush="Gray" 
-            BorderThickness="1"
-            >
+            Style="{StaticResource BaseBorderStyle}">
             <TextBlock
-                Text="Information"
-                FontSize="16"
-                FontWeight="Medium"
-                VerticalAlignment="Center"
-                Margin="10,0">
+                Style="{StaticResource ExtendedTextBlockStyle}"
+                Text="Information">
             </TextBlock>
         </Border>
 
@@ -230,53 +196,61 @@
         <Border
             Grid.Row="4"
             Grid.ColumnSpan="3"
-            BorderBrush="Gray" 
-            BorderThickness="1">
+            Style="{StaticResource BaseBorderStyle}">
             <StackPanel 
                 Orientation="Horizontal">
                 <StackPanel>
                     <!--ShowAverageAgeByNameBtn-->
                     <Button
-                    x:Name="ShowAverageAgeByNameBtn"
-                    Content="Show average age by name"
-                    FontSize="14"
-                    Width="180"
-                    HorizontalAlignment="Left"
-                    Margin="10 10 0 0"
-                    Click="ShowAverageAgeByNameBtn_Click"
-                    IsEnabled="{Binding Path=DataIsLoaded}"/>
+                        x:Name="ShowAverageAgeByNameBtn"
+                        Content="Show average age by name"
+                        Style="{StaticResource BaseButtonStyle}"
+                        Click="ShowAverageAgeByNameBtn_Click"
+                        IsEnabled="{Binding Path=DataIsLoaded}"/>
                     <!--ShowDangerousContactsBtn-->
                     <Button
-                    x:Name="ShowDangerousContactsBtn"
-                    Content="Show dangerous contacts"
-                    FontSize="14"
-                    Width="180"
-                    HorizontalAlignment="Left"
-                    Margin="10 10 0 0"
-                    Click="ShowDangerousContactsBtn_Click"
-                    IsEnabled="{Binding Path=DataIsLoaded}"/>
+                        x:Name="ShowDangerousContactsBtn"
+                        Content="Show dangerous contacts"
+                        Style="{StaticResource BaseButtonStyle}"
+                        Click="ShowDangerousContactsBtn_Click"
+                        IsEnabled="{Binding Path=DataIsLoaded}"/>
                 </StackPanel>
                 <StackPanel>
                     <!--CreateInfectionTreeBtn-->
                     <Button
-                    x:Name="CreateInfectionTreeBtn"
-                    Content="Create Infection Tree"
-                    FontSize="14"
-                    Width="180"
-                    HorizontalAlignment="Left"
-                    Margin="10 10 0 0"
-                    Click="CreateInfectionTreeBtn_Click"
-                    IsEnabled="{Binding Path=DataIsLoaded}"/>
+                        x:Name="CreateInfectionTreeBtn"
+                        Content="Create Infection Tree"
+                        FontSize="14"
+                        Width="180"
+                        HorizontalAlignment="Left"
+                        Margin="10 10 0 0"
+                        Click="CreateInfectionTreeBtn_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=DataIsLoaded}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=TreeIsCreated}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                     <!--SaveInfectionTreeToTxtBtn-->
                     <Button
-                    x:Name="SaveInfectionTreeToTxtBtn"
-                    Content="Save infection tree to txt"
-                    FontSize="14"
-                    Width="180"
-                    HorizontalAlignment="Left"
-                    Margin="10 10 0 0"
-                    Click="SaveInfectionTreeToTxtBtn_Click"
-                    IsEnabled="{Binding Path=DataIsLoaded}"/>
+                        x:Name="SaveInfectionTreeToTxtBtn"
+                        Content="Save infection tree to txt"
+                        Style="{StaticResource BaseButtonStyle}"
+                        Click="SaveInfectionTreeToTxtBtn_Click"
+                        IsEnabled="{Binding Path=DataIsLoaded}"/>
                 </StackPanel>
             </StackPanel>
         </Border>
@@ -285,8 +259,7 @@
         <Border
             Grid.Row="4"
             Grid.Column="1"
-            BorderBrush="Gray" 
-            BorderThickness="1">
+            Style="{StaticResource BaseBorderStyle}">
             <StackPanel>
                 <StackPanel.Style>
                     <Style TargetType="StackPanel">
@@ -309,99 +282,80 @@
                 <StackPanel
                     Orientation="Horizontal">
                     <!--Safe time:-->
-                    <TextBlock
-                        Text="Safe time:"
-                        FontSize="14"
-                        Margin="10 10 0 0">
+                    <TextBlock 
+                        Style="{StaticResource BaseTextBlockStyle}"
+                        Text="Safe time:">
                         <TextBlock.ToolTip>
                             During this period, the disease does not have time to spread.
                         </TextBlock.ToolTip>
                     </TextBlock>
                     <TextBox
                         x:Name ="VirusSafeTimeTxtBx"
-                        Text="{Binding Path=(local:Virus.SafeTimeStr), Mode=OneWay}"
-                        FontSize="14"
-                        Margin="10 10 0 0"
-                        Width="30"/>
+                        Style="{StaticResource BaseTextBoxStyle}"
+                        Text="{Binding Path=(local:Virus.SafeTimeStr), Mode=OneWay}"/>
                     <TextBlock
-                        Text="minutes"
-                        FontSize="14"
-                        Margin="10 10 0 0"/>
+                        Style="{StaticResource BaseTextBlockStyle}"
+                        Text="minutes"/>
                 </StackPanel>
                 <StackPanel
                     Orientation="Horizontal">
                     <!--First stage of disease:-->
                     <TextBlock
-                        Text="First stage of disease:"
-                        FontSize="14"
-                        Margin="10 10 0 0">
+                        Style="{StaticResource BaseTextBlockStyle}"
+                        Text="First stage of disease:">
                         <TextBlock.ToolTip>
                             During this period, the disease is not transmitted.
                         </TextBlock.ToolTip>
                     </TextBlock>
                     <TextBox
                         x:Name ="FirstStageOfDiseaseTxtBx"
-                        Text="{Binding StringFormat={}{0:dd}, Path=(local:Virus.FirstStageOfTheDisease)}"
-                        FontSize="14"
-                        Margin="10 10 0 0"
-                        Width="30"/>
-                    <TextBlock
-                        Text="days"
-                        FontSize="14"
-                        Margin="10 10 0 0"/>
+                        Style="{StaticResource BaseTextBoxStyle}"
+                        Text="{Binding StringFormat={}{0:dd}, Path=(local:Virus.FirstStageOfTheDisease)}"/>
+                    <TextBlock 
+                        Style="{StaticResource BaseTextBlockStyle}"
+                        Text="days"/>
                 </StackPanel>
                 <StackPanel
                     Orientation="Horizontal">
                     <!--Second stage of disease:-->
-                    <TextBlock
-                        Text="Second stage of disease:"
-                        FontSize="14"
-                        Margin="10 10 0 0">
+                    <TextBlock 
+                        Style="{StaticResource BaseTextBlockStyle}"
+                        Text="Second stage of disease:">
                         <TextBlock.ToolTip>
                             During this period, the disease begins to spread.
                         </TextBlock.ToolTip>
                     </TextBlock>
                     <TextBox
                         x:Name ="SecondtStageOfDiseaseTxtBx"
-                        Text="{Binding StringFormat={}{0:dd}, Path=(local:Virus.SecondStageOfTheDisease)}"
-                        FontSize="14"
-                        Margin="10 10 0 0"
-                        Width="30"/>
-                    <TextBlock
-                        Text="days"
-                        FontSize="14"
-                        Margin="10 10 0 0"/>
+                        Style="{StaticResource BaseTextBoxStyle}"
+                        Text="{Binding StringFormat={}{0:dd}, Path=(local:Virus.SecondStageOfTheDisease)}"/>
+                    <TextBlock 
+                        Style="{StaticResource BaseTextBlockStyle}"
+                        Text="days"/>
                 </StackPanel>
                 <StackPanel
                     Orientation="Horizontal">
                     <!--Immunity time:-->
                     <TextBlock
-                        Text="Immunity time:"
-                        FontSize="14"
-                        Margin="10 10 0 0">
+                        Style="{StaticResource BaseTextBlockStyle}"
+                        Text="Immunity time:">
                         <TextBlock.ToolTip>
                             During this period, a person cannot become infected.
                         </TextBlock.ToolTip>
                     </TextBlock>
                     <TextBox
                         x:Name ="ImmunityTimeTxtBx"
-                        Text="{Binding StringFormat={}{0:dd}, Path=(local:Virus.ImmunityTime)}"
-                        FontSize="14"
-                        Margin="10 10 0 0"
-                        Width="30"/>
+                        Style="{StaticResource BaseTextBoxStyle}"
+                        Text="{Binding StringFormat={}{0:dd}, Path=(local:Virus.ImmunityTime)}"/>
                     <TextBlock
-                        Text="days"
-                        FontSize="14"
-                        Margin="10 10 0 0"/>
+                        Style="{StaticResource BaseTextBlockStyle}"
+                        Text="days"/>
                 </StackPanel>
                 <!--AcceptVirusSettingsAndRefreshTreeBtn-->
                 <Button
                     x:Name="AcceptVirusSettingsAndRefreshTreeBtn"
                     Content="Accept settings and refresh tree"
-                    FontSize="14"
-                    Width="220"
-                    HorizontalAlignment="Left"
-                    Margin="10 10 0 0"
+                    Style="{StaticResource AcceptAndRefreshTreeBtnStyle}"
                     Click="AcceptVirusSettingsAndRefreshTreeBtn_Click"/>
             </StackPanel>
         </Border>
@@ -410,15 +364,13 @@
         <Border
             Grid.Row="4"
             Grid.Column="2"
-            BorderBrush="Gray" 
-            BorderThickness="1">
+            Style="{StaticResource BaseBorderStyle}">
             <StackPanel>
                 <!--PandemiaPeakMonth-->
                 <TextBlock
                     x:Name="PandemiaPeakMonthTxtBl"
                     FontSize="14"
-                    Margin="10 10 0 0"
-                    >
+                    Margin="10 10 0 0">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
@@ -433,8 +385,7 @@
                 <TextBlock
                     x:Name="MaxNumberOfInfectedTxtBl"
                     FontSize="14"
-                    Margin="10 10 0 0"
-                    >
+                    Margin="10 10 0 0">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
@@ -449,8 +400,7 @@
                 <TextBlock
                     x:Name="LostedManHoursTxtBl"
                     FontSize="14"
-                    Margin="10 10 0 0"
-                    >
+                    Margin="10 10 0 0">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>

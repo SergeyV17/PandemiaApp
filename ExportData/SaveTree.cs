@@ -29,8 +29,6 @@ namespace ExportData
             try
             {
                 File.Delete(path);
-                File.WriteAllText(path, "");
-
                 Print(path, tree);
 
                 return IsSaved = true;

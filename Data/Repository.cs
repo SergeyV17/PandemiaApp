@@ -87,8 +87,6 @@ namespace Data
         /// <returns>TreeIsCreated</returns>
         public bool CreateInfectionTree()
         {
-            TreeIsCreated = false;
-
             try
             {
                 Tree = new TreeNode();

@@ -50,6 +50,7 @@
     <Compile Include="TreeNode.cs" />
     <Compile Include="TreeSearch.cs" />
     <Compile Include="Virus.cs" />
+    <Compile Include="WorkSchedule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Deserialize\ImportData.csproj">

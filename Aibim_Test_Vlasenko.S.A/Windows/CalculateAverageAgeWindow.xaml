@@ -15,66 +15,35 @@
 
         <!--Title-->
         <TextBlock 
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                Text="Calculate average age by name"
-                FontSize="14"
-                Width="200"/>
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="Calculate average age by name"/>
         <StackPanel
-                 Grid.Row="1">
+            Grid.Row="1">
             <!--Textblock: Enter the lastName-->
             <TextBlock 
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Left"
-                    Text="Enter the last name:"
-                    FontSize="14"
-                    Width="200"
-                    Margin="10,4,0,0"/>
+                Style="{StaticResource BaseTextBlockStyle}"
+                Text="Enter the last name:"/>
             <!--Textbox for enter-->
             <TextBox
-                    Name="LastNameTxtBx"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Left"
-                    BorderBrush="LightGray"
-                    BorderThickness="1"
-                    FontSize="14"
-                    Width="200"
-                    Margin="10,5,0,5"/>
+                Name="LastNameTxtBx"
+                Style="{StaticResource ExtendedTextBoxStyle}"/>
             <!--Textblock: Enter the firstName-->
             <TextBlock 
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Left"
-                    Text="Enter the first name:"
-                    FontSize="14"
-                    Width="200"
-                    Margin="10,4,0,0"/>
+                Style="{StaticResource BaseTextBlockStyle}"
+                Text="Enter the first name:"/>
             <!--Textbox for enter-->
             <TextBox
-                    Name="FirstNameTxtBx"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Left"
-                    BorderBrush="LightGray"
-                    BorderThickness="1"
-                    FontSize="14"
-                    Width="200"
-                    Margin="10,5,0,5"/>
+                Name="FirstNameTxtBx"
+                Style="{StaticResource ExtendedTextBoxStyle}"/>
         </StackPanel>
 
         <!--Show result button-->
         <Button
-                Grid.Row="3"
-                x:Name="ShowResultBtn"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Center"
-                Content="Show result"
-                BorderBrush="LightGray"
-                BorderThickness="1"
-                FontSize="14"
-                Width="120"
-                Height="25"
-                Margin="91,10,81,0"
-                Click="ShowResultBtn_Click"
-                IsDefault="True">
+             Grid.Row="3"
+            x:Name="ShowResultBtn"
+            Style="{StaticResource ShowBtnStyle}"
+            Content="Show result"
+            Click="ShowResultBtn_Click">
         </Button>
     </Grid>
 </Window>
